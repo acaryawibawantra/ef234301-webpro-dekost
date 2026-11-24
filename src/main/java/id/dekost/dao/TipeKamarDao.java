@@ -43,6 +43,19 @@ public class TipeKamarDao {
         }
     }
 
+    public List<TipeKamar> findAll() throws SQLException {
+        String sql = SELECT_COLUMNS + " ORDER BY nama";
+        try (Connection connection = Database.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql);
+             ResultSet result = statement.executeQuery()) {
+            List<TipeKamar> tipeKamarList = new ArrayList<>();
+            while (result.next()) {
+                tipeKamarList.add(mapRow(result));
+            }
+            return tipeKamarList;
+        }
+    }
+
     public long count(String query) throws SQLException {
         String normalizedQuery = query == null ? "" : query.trim();
         String sql = normalizedQuery.isEmpty()

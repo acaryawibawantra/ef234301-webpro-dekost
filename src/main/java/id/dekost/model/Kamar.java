@@ -6,6 +6,7 @@ public class Kamar {
     private String nomorKamar;
     private Integer lantai;
     private Integer tipeKamarId;
+    private String tipeKamarNama;
     private String status;
     private String catatan;
 
@@ -14,10 +15,16 @@ public class Kamar {
 
     public Kamar(Integer id, String nomorKamar, Integer lantai, Integer tipeKamarId, String status,
                  String catatan) {
+        this(id, nomorKamar, lantai, tipeKamarId, null, status, catatan);
+    }
+
+    public Kamar(Integer id, String nomorKamar, Integer lantai, Integer tipeKamarId, String tipeKamarNama,
+                 String status, String catatan) {
         this.id = id;
         this.nomorKamar = nomorKamar;
         this.lantai = lantai;
         this.tipeKamarId = tipeKamarId;
+        this.tipeKamarNama = tipeKamarNama;
         this.status = status;
         this.catatan = catatan;
     }
@@ -52,6 +59,14 @@ public class Kamar {
 
     public void setTipeKamarId(Integer tipeKamarId) {
         this.tipeKamarId = tipeKamarId;
+    }
+
+    public String getTipeKamarNama() {
+        return tipeKamarNama;
+    }
+
+    public void setTipeKamarNama(String tipeKamarNama) {
+        this.tipeKamarNama = tipeKamarNama;
     }
 
     public String getStatus() {
