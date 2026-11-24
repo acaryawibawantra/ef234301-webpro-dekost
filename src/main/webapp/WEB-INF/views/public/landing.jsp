@@ -136,6 +136,59 @@
                 </div>
             </div>
         </section>
+
+        <section class="rooms" id="tipe-kamar" aria-labelledby="rooms-title">
+            <div class="section-head">
+                <div class="section-head__aside">
+                    <span class="section-pill">Tipe kamar</span>
+                </div>
+                <div class="section-head__body">
+                    <h2 class="section-head__title" id="rooms-title">
+                        Pilih kamar sesuai kebutuhan, dari yang sederhana sampai lengkap dengan
+                        AC dan kamar mandi dalam.
+                    </h2>
+                    <a class="button button--secondary" href="#tipe-kamar">Lihat semua kamar</a>
+                </div>
+            </div>
+
+            <div class="room-grid">
+                <article class="room-card">
+                    <div class="room-card__photo room-card__photo--standar"
+                         role="img" aria-label="Kamar tipe Standar"></div>
+                    <div class="room-card__head">
+                        <h3 class="room-card__name">Standar</h3>
+                        <span class="badge badge--success"><span class="badge__dot"></span>3 tersedia</span>
+                    </div>
+                    <p class="room-card__price">Rp1.200.000 <span>/ bulan</span></p>
+                    <p class="room-card__facilities">9 m&sup2; &middot; Kipas angin &middot; Kamar mandi luar &middot; WiFi</p>
+                    <a class="button button--secondary room-card__cta" href="#kontak">Pesan kamar</a>
+                </article>
+
+                <article class="room-card">
+                    <div class="room-card__photo room-card__photo--deluxe"
+                         role="img" aria-label="Kamar tipe Deluxe"></div>
+                    <div class="room-card__head">
+                        <h3 class="room-card__name">Deluxe</h3>
+                        <span class="badge badge--success"><span class="badge__dot"></span>2 tersedia</span>
+                    </div>
+                    <p class="room-card__price">Rp1.800.000 <span>/ bulan</span></p>
+                    <p class="room-card__facilities">12 m&sup2; &middot; AC &middot; Kamar mandi dalam &middot; WiFi</p>
+                    <a class="button button--secondary room-card__cta" href="#kontak">Pesan kamar</a>
+                </article>
+
+                <article class="room-card">
+                    <div class="room-card__photo room-card__photo--premium"
+                         role="img" aria-label="Kamar tipe Premium"></div>
+                    <div class="room-card__head">
+                        <h3 class="room-card__name">Premium</h3>
+                        <span class="badge badge--warning"><span class="badge__dot"></span>1 tersisa</span>
+                    </div>
+                    <p class="room-card__price">Rp2.400.000 <span>/ bulan</span></p>
+                    <p class="room-card__facilities">16 m&sup2; &middot; AC &middot; Kamar mandi dalam &middot; Meja kerja</p>
+                    <a class="button button--secondary room-card__cta" href="#kontak">Pesan kamar</a>
+                </article>
+            </div>
+        </section>
     </main>
 </div>
 </body>
