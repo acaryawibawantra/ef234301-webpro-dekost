@@ -7,6 +7,8 @@ public class Pembayaran {
 
     private Integer id;
     private Integer penghuniId;
+    private String penghuniNama;
+    private String nomorKamar;
     private LocalDate periode;
     private BigDecimal jumlah;
     private LocalDate jatuhTempo;
@@ -46,6 +48,22 @@ public class Pembayaran {
 
     public void setPenghuniId(Integer penghuniId) {
         this.penghuniId = penghuniId;
+    }
+
+    public String getPenghuniNama() {
+        return penghuniNama;
+    }
+
+    public void setPenghuniNama(String penghuniNama) {
+        this.penghuniNama = penghuniNama;
+    }
+
+    public String getNomorKamar() {
+        return nomorKamar;
+    }
+
+    public void setNomorKamar(String nomorKamar) {
+        this.nomorKamar = nomorKamar;
     }
 
     public LocalDate getPeriode() {
