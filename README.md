@@ -78,6 +78,7 @@ docs/     CONTRACT.md, DECISIONS.md
   serta konfigurasi build dan deployment (`pom.xml`, `Dockerfile`, `docker-compose.yml`).
 
 Kontrak request attribute dan parameter form antar FE/BE dicatat di `docs/CONTRACT.md`.
+Pembagian task dan sprint ada di `docs/SPRINT.md`.
 
 ## Catatan
 
