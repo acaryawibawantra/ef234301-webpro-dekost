@@ -21,7 +21,7 @@
             <a class="site-header__link" href="#kontak">Kontak</a>
         </nav>
 
-        <a class="button button--primary" href="#kontak">Booking kamar</a>
+        <a class="button button--primary" href="${pageContext.request.contextPath}/login">Masuk</a>
     </header>
 
     <main class="landing__main">
