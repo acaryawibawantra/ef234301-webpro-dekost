@@ -32,7 +32,7 @@ html {
 body {
   min-height: 100vh;
   overflow-x: hidden;
-  font-family: "Urbanist", system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-family: "Poppins", system-ui, -apple-system, "Segoe UI", sans-serif;
   font-size: 15px;
   line-height: 1.5;
   color: var(--ink, #14202B);

@@ -167,7 +167,7 @@ Syarat tugas: minimal **8 fitur CRUD**. Yang dipakai adalah 8 fitur (F1–F8); l
 ### 7.1 Design system
 
 - `tokens.css` — warna, radius, spacing (sudah ada; jangan diubah tanpa review).
-- `base.css` — reset + Urbanist (sudah ada).
+- `base.css` — reset + Poppins (sudah ada).
 - `components.css` — button (primary/accent/secondary), badge status, input, card (terang/gelap/outline), table, modal, sidebar, toast.
 - `pages.css` — gaya khusus landing, login, dashboard, list page.
 - Spesifikasi visual admin (Figma + catatan): dashboard, kamar, penghuni, pembayaran, keluhan, tipe kamar, modal.
