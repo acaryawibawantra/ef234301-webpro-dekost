@@ -24,7 +24,7 @@
         <a class="site-header__cta" href="#kontak">Booking kamar</a>
     </header>
 
-    <main>
+    <main class="landing__main">
         <section class="hero" aria-labelledby="hero-title">
             <div class="hero__photo" role="img" aria-label="Eksterior kos De' Kost"></div>
             <div class="hero__overlay" aria-hidden="true"></div>
@@ -46,6 +46,72 @@
                 <a href="#" rel="noopener">WhatsApp</a>
                 <a href="#" rel="noopener">Maps</a>
             </nav>
+        </section>
+
+        <section class="about" id="tentang" aria-label="Tentang De' Kost">
+            <div class="about__aside">
+                <span class="section-pill">Tentang De&rsquo; Kost</span>
+            </div>
+            <p class="about__text">
+                Di De&rsquo; Kost kamu tidak sekadar menyewa kamar, kamu pulang. Sejak 2021 kami
+                menjadi rumah bagi mahasiswa dan pekerja muda dengan kamar bersih, lingkungan
+                aman, dan pengelolaan yang tertata.
+            </p>
+        </section>
+
+        <section class="highlights" id="fasilitas" aria-labelledby="highlights-title">
+            <h2 class="visually-hidden" id="highlights-title">Fasilitas De&rsquo; Kost</h2>
+
+            <article class="highlight-card highlight-card--dark">
+                <span class="highlight-card__icon">
+                    <img src="${pageContext.request.contextPath}/assets/img/icon-shield.svg"
+                         alt="" width="24" height="24">
+                </span>
+                <p class="highlight-card__text">
+                    Akses 24 jam dengan CCTV dan kunci pribadi, listrik token terpisah, serta
+                    WiFi cepat di setiap lantai. Nyaman untuk istirahat dan belajar.
+                </p>
+                <div class="highlight-card__badges">
+                    <span class="badge badge--accent"><span class="badge__dot"></span>CCTV 24 jam</span>
+                    <span class="badge badge--neutral"><span class="badge__dot"></span>WiFi</span>
+                </div>
+            </article>
+
+            <article class="highlight-card highlight-card--photo">
+                <p class="highlight-card__label">Lorong terang dan sirkulasi udara baik</p>
+            </article>
+
+            <article class="highlight-card highlight-card--stats">
+                <p class="highlight-card__stat">24</p>
+                <p class="highlight-card__stat-label">Kamar siap huni</p>
+                <p class="highlight-card__stat-note">
+                    Tiga tipe kamar untuk setiap kebutuhan dan budget.
+                </p>
+
+                <div class="highlight-card__spacer"></div>
+
+                <div class="room-row">
+                    <span class="room-row__name">Standar</span>
+                    <img class="room-row__dots"
+                         src="${pageContext.request.contextPath}/assets/img/dots.svg"
+                         alt="" width="164" height="10">
+                    <span class="room-row__count">12</span>
+                </div>
+                <div class="room-row">
+                    <span class="room-row__name">Deluxe</span>
+                    <img class="room-row__dots"
+                         src="${pageContext.request.contextPath}/assets/img/dots.svg"
+                         alt="" width="164" height="10">
+                    <span class="room-row__count">8</span>
+                </div>
+                <div class="room-row">
+                    <span class="room-row__name">Premium</span>
+                    <img class="room-row__dots"
+                         src="${pageContext.request.contextPath}/assets/img/dots.svg"
+                         alt="" width="164" height="10">
+                    <span class="room-row__count">4</span>
+                </div>
+            </article>
         </section>
     </main>
 </div>
