@@ -1,9 +1,10 @@
 # De' Kost
 
 Aplikasi manajemen kos (JSP + Servlet + PostgreSQL) untuk tugas EF234301 Web Programming.
-Fondasi backend menyediakan pool koneksi PostgreSQL, filter UTF-8, model JavaBean untuk
-entitas utama, serta utilitas flash message, validasi, pagination, dan format Rupiah/tanggal.
-Halaman `/health` memeriksa konektivitas database.
+Landing page publik dan halaman login sudah tersedia. Fondasi backend menyediakan pool
+koneksi PostgreSQL, filter UTF-8, model JavaBean untuk entitas utama, serta utilitas flash
+message, validasi, pagination, dan format Rupiah/tanggal. Halaman `/health` memeriksa
+konektivitas database.
 
 ## Prasyarat
 
@@ -57,19 +58,19 @@ src/main/java/id/dekost/
   model/      User, TipeKamar, Kamar, Penghuni, Pembayaran, Keluhan
   dao/        akses database (placeholder)
   service/    logika bisnis/transaksi (placeholder)
-  servlet/    HealthServlet (satu-satunya servlet saat ini)
-  filter/     EncodingFilter (placeholder untuk filter lain)
+  servlet/    LandingServlet, AuthServlet (GET login), HealthServlet
+  filter/     EncodingFilter
   util/       Flash, Validator, Pagination, RupiahFormatter, TanggalFormatter
 src/main/webapp/
   WEB-INF/web.xml
-  WEB-INF/views/layout/   head.jspf
-  WEB-INF/views/public/   (kosong)
-  WEB-INF/views/admin/    (kosong)
-  assets/css/             tokens.css, base.css
+  WEB-INF/views/layout/   head.jspf, sidebar.jspf, topbar.jspf, footer.jspf
+  WEB-INF/views/public/   landing.jsp, login.jsp
+  WEB-INF/views/admin/    (kosong, menunggu halaman CRUD)
+  assets/css/             tokens.css, base.css, components.css, pages.css
   assets/js/              app.js
-  assets/img/             (kosong)
+  assets/img/             hero, footer, lorong, foto kamar, ikon
 db/       schema.sql (DDL), seed.sql (data contoh)
-docs/     CONTRACT.md, DECISIONS.md
+docs/     CONTRACT.md, DECISIONS.md, SPRINT.md, UI-KIT.md, ADMIN-SPEC.md
 ```
 
 ## Pembagian kerja FE / BE
