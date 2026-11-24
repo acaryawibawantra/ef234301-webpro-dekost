@@ -57,13 +57,35 @@ penghuni berstatus `AKTIF` tidak dapat dihapus.
 
 | Request attribute | Tipe | Keterangan |
 |---|---|---|
-| | | |
+| `penghuniList` | `List<Penghuni>` | Hasil pencarian yang sudah dipaginasi |
+| `kamarOptions` | `List<Kamar>` | Kamar tersedia; kamar saat ini juga disertakan saat membuka form edit |
+| `pagination` | `Pagination` | Metadata pagination, 10 baris per halaman |
+| `q` | String | Nilai pencarian nama/nomor HP/nomor kamar yang sudah di-trim |
+| `status` | String | Filter status aktif |
+| `form` | `Penghuni` | Nilai form check-in/ubah/pindah, termasuk input saat validasi gagal |
+| `errors` | `Map<String, String>` | Pesan validasi per nama field atau `general` |
+| `pageTitle` | String | Judul halaman: `Penghuni` |
+| `activeNav` | String | Item sidebar aktif: `penghuni` |
+| `flash` | `Flash.Message` | Pesan setelah operasi POST berhasil/gagal |
 
 ### Parameter form
 
 | Parameter form | Tipe | Aturan |
 |---|---|---|
-| | | |
+| `namaLengkap` | String | Wajib, maksimal 100 karakter |
+| `noHp` | String | Wajib, 9–15 digit |
+| `pekerjaanInstansi` | String | Opsional, maksimal 100 karakter |
+| `kontakDarurat` | String | Opsional, maksimal 100 karakter |
+| `tanggalMasuk` | Date | Wajib, format ISO `yyyy-MM-dd` |
+| `kamarId` | Integer | Wajib untuk check-in/pindah; hanya kamar tersedia yang dapat dipilih |
+| `id` | Integer | Wajib untuk update/check-out |
+| `tanggalKeluar` | Date | Opsional saat check-out; default tanggal hari ini dan tidak boleh sebelum tanggal masuk |
+| `_csrf` | String | Wajib untuk semua POST; token harus cocok dengan sesi |
+
+`GET /admin/penghuni` menerima `q`, `status`, `page`, dan `edit=ID`. Check-in memakai
+`POST /admin/penghuni/create`, update/pindah memakai `/update`, dan check-out memakai
+`/checkout`. Check-in, pindah kamar, dan check-out mengubah data penghuni serta status kamar
+dalam satu transaksi; kamar `PERBAIKAN` atau yang sudah memiliki penempatan tidak dapat dipilih.
 
 ## Pembayaran
 

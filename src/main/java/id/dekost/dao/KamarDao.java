@@ -72,6 +72,25 @@ public class KamarDao {
         }
     }
 
+    public List<Kamar> findAvailableRooms() throws SQLException {
+        String sql = SELECT_COLUMNS + """
+                 WHERE k.status = 'TERSEDIA'
+                   AND NOT EXISTS (
+                       SELECT 1 FROM penghuni p WHERE p.kamar_id = k.id
+                   )
+                 ORDER BY k.nomor_kamar
+                """;
+        try (Connection connection = Database.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql);
+             ResultSet result = statement.executeQuery()) {
+            List<Kamar> kamarList = new ArrayList<>();
+            while (result.next()) {
+                kamarList.add(mapRow(result));
+            }
+            return kamarList;
+        }
+    }
+
     public boolean existsByNomorKamar(String nomorKamar, Integer excludedId) throws SQLException {
         String sql = excludedId == null
                 ? "SELECT EXISTS (SELECT 1 FROM kamar WHERE nomor_kamar = ?)"
