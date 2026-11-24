@@ -6,7 +6,9 @@ public class Keluhan {
 
     private Integer id;
     private Integer penghuniId;
+    private String penghuniNama;
     private Integer ditanganiOleh;
+    private String penanganNama;
     private String judul;
     private String deskripsi;
     private String kategori;
@@ -51,12 +53,28 @@ public class Keluhan {
         this.penghuniId = penghuniId;
     }
 
+    public String getPenghuniNama() {
+        return penghuniNama;
+    }
+
+    public void setPenghuniNama(String penghuniNama) {
+        this.penghuniNama = penghuniNama;
+    }
+
     public Integer getDitanganiOleh() {
         return ditanganiOleh;
     }
 
     public void setDitanganiOleh(Integer ditanganiOleh) {
         this.ditanganiOleh = ditanganiOleh;
+    }
+
+    public String getPenanganNama() {
+        return penanganNama;
+    }
+
+    public void setPenanganNama(String penanganNama) {
+        this.penanganNama = penanganNama;
     }
 
     public String getJudul() {

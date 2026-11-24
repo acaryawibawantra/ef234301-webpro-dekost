@@ -9,13 +9,22 @@ parameter form **belum diisi**; akan disepakati tim pada akhir Fase 1.
 
 | Request attribute | Tipe | Keterangan |
 |---|---|---|
-| | | |
+| `roomOccupancy` | `Map<String, Long>` | Jumlah kamar berdasarkan status `TERSEDIA`, `TERISI`, dan `PERBAIKAN` |
+| `floorOccupancy` | `List<DashboardDao.FloorOccupancy>` | Jumlah kamar dan kamar terisi per lantai |
+| `monthlyRevenue` | `BigDecimal` | Total pembayaran berstatus `LUNAS` untuk periode bulan berjalan |
+| `overdueBilling` | `DashboardDao.BillingSummary` | Jumlah dan total nominal tagihan belum lunas yang jatuh tempo sebelum hari ini |
+| `openComplaints` | `DashboardDao.OpenComplaintSummary` | Jumlah keluhan belum selesai dan jumlah berprioritas `TINGGI` |
+| `duePayments` | `List<Pembayaran>` | Maksimal 5 pembayaran belum lunas, diurutkan dari jatuh tempo terdekat; status tampilan dihitung dengan SQL `CASE` |
+| `recentComplaints` | `List<Keluhan>` | Maksimal 3 keluhan terbaru berdasarkan `created_at` |
 
 ### Parameter form
 
 | Parameter form | Tipe | Aturan |
 |---|---|---|
-| | | |
+| — | — | Dashboard hanya membaca data dan tidak memiliki parameter form |
+
+`DashboardDao` menyediakan query agregat untuk seluruh statistik di atas. Servlet dashboard
+meneruskan hasilnya ke atribut request; JSP hanya menampilkan data tersebut.
 
 ## Kamar
 
@@ -133,13 +142,38 @@ aktif yang belum memiliki tagihan; constraint unik dan `ON CONFLICT` mencegah du
 
 | Request attribute | Tipe | Keterangan |
 |---|---|---|
-| | | |
+| `keluhanList` | `List<Keluhan>` | Hasil pencarian yang sudah dipaginasi; tiap keluhan memuat nama penghuni dan nama admin penangan |
+| `penghuniOptions` | `List<KeluhanDao.OccupantOption>` | Pilihan penghuni untuk mencatat keluhan |
+| `categories` | `List<String>` | Kategori yang diizinkan |
+| `priorities` | `List<String>` | Prioritas yang diizinkan |
+| `statuses` | `List<String>` | Status yang diizinkan |
+| `pagination` | `Pagination` | Metadata pagination, 10 baris per halaman |
+| `q` | String | Nilai pencarian judul/deskripsi/nama penghuni yang sudah di-trim |
+| `status` | String | Filter status aktif |
+| `form` | `Keluhan` | Nilai form tambah/ubah, termasuk input saat validasi gagal |
+| `errors` | `Map<String, String>` | Pesan validasi per nama field atau `general` |
+| `pageTitle` | String | Judul halaman: `Keluhan` |
+| `activeNav` | String | Item sidebar aktif: `keluhan` |
+| `flash` | `Flash.Message` | Pesan setelah operasi POST berhasil/gagal |
 
 ### Parameter form
 
 | Parameter form | Tipe | Aturan |
 |---|---|---|
-| | | |
+| `penghuniId` | Integer | Wajib menunjuk penghuni yang ada |
+| `judul` | String | Wajib, maksimal 150 karakter |
+| `deskripsi` | String | Wajib |
+| `kategori` | String | `FASILITAS`, `KEBERSIHAN`, `KEBISINGAN`, atau `LAINNYA`; default `LAINNYA` |
+| `prioritas` | String | `RENDAH`, `SEDANG`, atau `TINGGI`; default `SEDANG` |
+| `status` | String | Saat dibuat otomatis `BARU`; saat diubah `BARU`, `DIPROSES`, atau `SELESAI` |
+| `tanggapan` | String | Opsional |
+| `id` | Integer | Wajib untuk update/delete |
+| `_csrf` | String | Wajib untuk semua POST; token harus cocok dengan sesi |
+
+`GET /admin/keluhan` menerima `q`, `status`, `page`, dan `edit=ID`. Operasi perubahan
+memakai `POST /admin/keluhan/create`, `/update`, dan `/delete`. Saat status berubah menjadi
+`DIPROSES`, admin yang sedang login dicatat sebagai `ditangani_oleh`; saat menjadi `SELESAI`,
+`resolved_at` diisi oleh database. Status `SELESAI` tidak dapat dikembalikan ke `BARU`.
 
 ## Tipe kamar
 
