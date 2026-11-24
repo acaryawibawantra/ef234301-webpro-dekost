@@ -7,9 +7,9 @@ Acuan fitur dan aturan bisnis: `PRD-quiz2.md`. Kontrak data FE–BE: `docs/CONTR
 
 | Orang | Peran | Fokus utama | Folder yang boleh diubah |
 |---|---|---|---|
-| **Acarya** | UI/UX + FE Public | Design system, landing page, login, layout shell, QA visual | `src/main/webapp/assets/**`, `WEB-INF/views/public/**`, `WEB-INF/views/layout/**`, `docs/` desain |
-| **Atma** | FE Admin | Dashboard, 5 halaman list + modal CRUD, JS interaksi | `WEB-INF/views/admin/**`, `assets/js/**`, halaman admin |
-| **Anang** | BE + DB + Deploy | Model, DAO, service, servlet, auth, validasi, transaksi, Docker/deploy | `src/main/java/**`, `db/**`, `Dockerfile`, `docker-compose.yml` |
+| **Acarya** (`@acaryawibawantra`) | UI/UX + FE Public | Design system, landing page, login, layout shell, QA visual | `src/main/webapp/assets/**`, `WEB-INF/views/public/**`, `WEB-INF/views/layout/**`, `docs/` desain |
+| **Atma** (`@Daemon19`) | FE Admin | Dashboard, 5 halaman list + modal CRUD, JS interaksi | `WEB-INF/views/admin/**`, `assets/js/**`, halaman admin |
+| **Anang** (`@ArdhiCode`) | BE + DB + Deploy | Model, DAO, service, servlet, auth, validasi, transaksi, Docker/deploy | `src/main/java/**`, `db/**`, `Dockerfile`, `docker-compose.yml` |
 
 Aturan kolaborasi:
 
@@ -204,6 +204,8 @@ Struktur board yang dipakai:
 - **Format judul issue:** `[S0][BE] Finalisasi fondasi backend`.
 
 Setiap issue memuat: konteks, output, acceptance criteria, file utama, dan PIC. Board ini adalah sumber status harian; dokumen ini sumber pembagian kerja.
+
+Semua 27 issue sudah di-assign ke akun GitHub masing-masing: `@acaryawibawantra` (Acarya), `@Daemon19` (Atma), `@ArdhiCode` (Anang) — 9 issue per orang.
 
 ## 10. Jadwal kilat (jika mengejar deadline 25 Nov 2026 23:59)
 
