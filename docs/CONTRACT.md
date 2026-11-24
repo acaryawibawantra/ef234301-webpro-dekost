@@ -93,13 +93,39 @@ dalam satu transaksi; kamar `PERBAIKAN` atau yang sudah memiliki penempatan tida
 
 | Request attribute | Tipe | Keterangan |
 |---|---|---|
-| | | |
+| `pembayaranList` | `List<Pembayaran>` | Hasil pencarian yang sudah dipaginasi; status dihitung dari status tersimpan dan jatuh tempo |
+| `penghuniOptions` | `List<PembayaranDao.OccupantOption>` | Pilihan penghuni, kamar, tarif kamar saat ini, dan status penghuni |
+| `paymentMethods` | `Set<String>` | Metode yang diizinkan: `TUNAI`, `TRANSFER`, `QRIS` |
+| `pagination` | `Pagination` | Metadata pagination, 10 baris per halaman |
+| `q` | String | Nilai pencarian nama penghuni/nomor kamar/periode yang sudah di-trim |
+| `status` | String | Filter status pembayaran hasil perhitungan SQL |
+| `form` | `Pembayaran` | Nilai form tambah/ubah, termasuk nilai input saat validasi gagal |
+| `errors` | `Map<String, String>` | Pesan validasi per nama field atau `general` |
+| `pageTitle` | String | Judul halaman: `Pembayaran` |
+| `activeNav` | String | Item sidebar aktif: `pembayaran` |
+| `flash` | `Flash.Message` | Pesan setelah operasi POST berhasil/gagal |
 
 ### Parameter form
 
 | Parameter form | Tipe | Aturan |
 |---|---|---|
-| | | |
+| `penghuniId` | Integer | Wajib menunjuk penghuni yang ada; tagihan baru memakai tarif kamar saat ini sebagai jumlah default jika jumlah tidak dikirim |
+| `periode` | Date | Wajib format ISO `yyyy-MM-dd` dan harus tanggal pertama bulan tagihan |
+| `jumlah` | Decimal | Wajib, 0 atau lebih, maksimal 10 digit dan 2 angka desimal |
+| `jatuhTempo` | Date | Wajib format ISO `yyyy-MM-dd`, tidak boleh sebelum periode |
+| `buktiUrl` | String | Opsional, maksimal 255 karakter |
+| `id` | Integer | Wajib untuk update/delete/pay |
+| `tanggalBayar` | Date | Wajib untuk menandai lunas, format ISO `yyyy-MM-dd` |
+| `metode` | String | Wajib untuk menandai lunas: `TUNAI`, `TRANSFER`, atau `QRIS` |
+| `_csrf` | String | Wajib untuk semua POST; token harus cocok dengan sesi |
+
+`GET /admin/pembayaran` menerima `q`, `status`, `page`, dan `edit=ID`. Operasi perubahan
+memakai `POST /admin/pembayaran/create`, `/update`, `/pay`, `/delete`, dan `/generate`.
+Status list dihitung oleh SQL: `LUNAS` tetap lunas; selain itu tagihan dengan
+`jatuh_tempo < CURRENT_DATE` ditampilkan `TERLAMBAT`, dan sisanya `BELUM_BAYAR`.
+Pembayaran yang sudah lunas tidak dapat diubah atau ditandai lunas kembali. Generate
+membuat tagihan periode bulan berjalan dengan jatuh tempo tanggal 5 hanya untuk penghuni
+aktif yang belum memiliki tagihan; constraint unik dan `ON CONFLICT` mencegah duplikasi.
 
 ## Keluhan
 
