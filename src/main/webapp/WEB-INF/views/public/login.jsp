@@ -22,9 +22,9 @@
             </a>
 
             <div class="login__heading">
-                <h1 class="login__title">Masuk ke panel pengelola</h1>
+                <h1 class="login__title">Masuk ke De&rsquo; Kost</h1>
                 <p class="login__subtitle">
-                    Kelola kamar, penghuni, pembayaran, dan keluhan dalam satu tempat.
+                    Pengelola dan penghuni masuk dengan akun masing-masing.
                 </p>
             </div>
 
@@ -56,7 +56,7 @@
                 <button class="button button--primary button--block" type="submit">Masuk</button>
             </form>
 
-            <p class="login__note">Penghuni masuk dengan akun yang dibuat pengelola.</p>
+            <p class="login__note">Akun penghuni dibuat oleh pengelola.</p>
         </div>
     </section>
 </main>
