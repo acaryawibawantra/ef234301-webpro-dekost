@@ -25,7 +25,8 @@ docker compose up --build
 - PostgreSQL: `localhost:5432`, database/user `dekost` (kredensial development lokal)
 
 Saat pertama kali dibuat, container Postgres menjalankan `db/schema.sql`.
-`db/seed.sql` **tidak** dijalankan otomatis; isi dulu hash BCrypt placeholder, lalu:
+`db/seed.sql` **tidak** dijalankan otomatis; file tersebut sudah berisi hash BCrypt
+admin dan data contoh, lalu jalankan:
 
 ```bash
 docker compose exec -T postgres psql -U dekost -d dekost < db/seed.sql
@@ -56,8 +57,8 @@ Hentikan dengan `docker compose down` (tambahkan `-v` untuk menghapus volume dat
 src/main/java/id/dekost/
   config/     Database.java (HikariCP, env var)
   model/      User, TipeKamar, Kamar, Penghuni, Pembayaran, Keluhan
-  dao/        akses database (placeholder)
-  service/    logika bisnis/transaksi (placeholder)
+  dao/        akses database (UserDao dan DAO entitas lain)
+  service/    logika bisnis/transaksi (AuthService dan service entitas lain)
   servlet/    LandingServlet, AuthServlet (GET login), HealthServlet
   filter/     EncodingFilter
   util/       Flash, Validator, Pagination, RupiahFormatter, TanggalFormatter
@@ -84,7 +85,6 @@ Pembagian task dan sprint ada di `docs/SPRINT.md`.
 
 ## Catatan
 
-- Tidak ada secret di repo. Konfigurasi sensitif dibaca dari environment variable.
+- Konfigurasi sensitif dibaca dari environment variable; password seed hanya disimpan sebagai hash BCrypt.
 - Tidak memakai Spring, Hibernate, Bootstrap, atau Tailwind. Semua CSS ditulis sendiri
   memakai design token di `assets/css/tokens.css`.
-- Seed password masih placeholder `<bcrypt-hash>`; diisi oleh fitur login pada fase berikutnya.

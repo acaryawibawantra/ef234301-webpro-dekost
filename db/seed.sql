@@ -2,12 +2,12 @@
 -- Seed data contoh: Manajemen Kos (PostgreSQL)
 -- Jalankan SETELAH db/schema.sql.
 -- JANGAN dijalankan otomatis oleh Docker/init.
--- password_hash masih placeholder "<bcrypt-hash>" dan akan diisi oleh fitur login.
+-- password_hash berisi hash BCrypt; jangan simpan password plaintext di seed.
 -- =====================================================
 
 INSERT INTO users (nama, email, password_hash, role) VALUES
- ('Pengelola Kos', 'admin@kos.test', '<bcrypt-hash>', 'ADMIN'),
- ('Budi Santoso',  'budi@kos.test',  '<bcrypt-hash>', 'PENGHUNI');
+ ('Pengelola Kos', 'admin@kos.test', '$2a$12$LjwKX3H10w0nsEF/YDd6AusVmTX2koerpgpblk7zf7Hr4sycbf9Pm', 'ADMIN'),
+ ('Budi Santoso',  'budi@kos.test',  '$2a$12$GVYojplH72DAfMx/Cg6xN.QkqH4ytiztpO4KqakA5tdiGjNyyzFoK', 'PENGHUNI');
 
 INSERT INTO tipe_kamar (nama, harga_bulanan, luas_m2, fasilitas) VALUES
  ('Standar', 1200000, 9,  'Kasur, lemari, kipas angin, WiFi'),
