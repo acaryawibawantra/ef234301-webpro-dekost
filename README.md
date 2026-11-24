@@ -59,7 +59,7 @@ src/main/java/id/dekost/
   model/      User, TipeKamar, Kamar, Penghuni, Pembayaran, Keluhan
   dao/        akses database (UserDao dan DAO entitas lain)
   service/    logika bisnis/transaksi (AuthService dan service entitas lain)
-  servlet/    LandingServlet, AuthServlet (login/logout), HealthServlet
+  servlet/    LandingServlet, AuthServlet, TipeKamarServlet, HealthServlet
   filter/     EncodingFilter, AuthFilter, CsrfFilter
   util/       Flash, Validator, Pagination, RupiahFormatter, TanggalFormatter
 src/main/webapp/

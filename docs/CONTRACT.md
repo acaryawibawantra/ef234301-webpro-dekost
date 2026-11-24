@@ -79,13 +79,29 @@ parameter form **belum diisi**; akan disepakati tim pada akhir Fase 1.
 
 | Request attribute | Tipe | Keterangan |
 |---|---|---|
-| | | |
+| `tipeKamarList` | `List<TipeKamar>` | Hasil pencarian yang sudah dipaginasi |
+| `pagination` | `Pagination` | Metadata pagination, 10 baris per halaman |
+| `q` | String | Nilai pencarian nama yang sudah di-trim |
+| `form` | `TipeKamar` | Nilai form tambah/ubah, termasuk nilai input saat validasi gagal |
+| `errors` | `Map<String, String>` | Pesan validasi per nama field atau `general` |
+| `pageTitle` | String | Judul halaman: `Tipe Kamar` |
+| `activeNav` | String | Item sidebar aktif: `tipe-kamar` |
+| `flash` | `Flash.Message` | Pesan setelah operasi POST berhasil/gagal |
 
 ### Parameter form
 
 | Parameter form | Tipe | Aturan |
 |---|---|---|
-| | | |
+| `nama` | String | Wajib, maksimal 50 karakter, unik |
+| `hargaBulanan` | Decimal | Wajib, 0 atau lebih, maksimal 10 digit dan 2 angka desimal |
+| `luasM2` | Integer | Wajib, bilangan bulat lebih besar dari 0 |
+| `fasilitas` | String | Opsional |
+| `id` | Integer | Wajib untuk update/delete |
+| `_csrf` | String | Wajib untuk semua POST; token harus cocok dengan sesi |
+
+`GET /admin/tipe-kamar` menerima `q`, `page`, dan `edit=ID`. Operasi perubahan memakai
+`POST /admin/tipe-kamar/create`, `/update`, dan `/delete`. Penghapusan ditolak jika tipe
+kamar masih direferensikan oleh kamar.
 
 ## Landing
 
