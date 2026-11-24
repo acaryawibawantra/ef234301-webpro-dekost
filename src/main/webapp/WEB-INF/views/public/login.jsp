@@ -1,4 +1,5 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
 <!DOCTYPE html>
 <html lang="id">
 <%@ include file="/WEB-INF/views/layout/head.jspf" %>
@@ -32,6 +33,7 @@
                 <c:if test="${not empty error}">
                     <p class="login__error" role="alert"><c:out value="${error}"/></p>
                 </c:if>
+                <input type="hidden" name="_csrf" value="${fn:escapeXml(csrfToken)}">
 
                 <div class="field">
                     <label class="field__label" for="email">Email</label>
