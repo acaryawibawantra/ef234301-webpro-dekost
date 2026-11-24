@@ -1,0 +1,23 @@
+package id.dekost.servlet;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
+import java.io.IOException;
+
+/**
+ * Halaman publik di root aplikasi. Saat ini hanya menampilkan landing page;
+ * data kamar akan dihubungkan pada tahap berikutnya.
+ */
+@WebServlet(name = "LandingServlet", urlPatterns = "")
+public class LandingServlet extends HttpServlet {
+
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        request.getRequestDispatcher("/WEB-INF/views/public/landing.jsp").forward(request, response);
+    }
+}
