@@ -1,8 +1,9 @@
 # De' Kost
 
 Aplikasi manajemen kos (JSP + Servlet + PostgreSQL) untuk tugas EF234301 Web Programming.
-Repositori ini masih berupa **kerangka proyek**: belum ada fitur, hanya konfigurasi dasar
-dan halaman uji `/health`.
+Fondasi backend menyediakan pool koneksi PostgreSQL, filter UTF-8, model JavaBean untuk
+entitas utama, serta utilitas flash message, validasi, pagination, dan format Rupiah/tanggal.
+Halaman `/health` memeriksa konektivitas database.
 
 ## Prasyarat
 
@@ -53,12 +54,12 @@ Hentikan dengan `docker compose down` (tambahkan `-v` untuk menghapus volume dat
 ```
 src/main/java/id/dekost/
   config/     Database.java (HikariCP, env var)
-  model/      model data (placeholder)
+  model/      User, TipeKamar, Kamar, Penghuni, Pembayaran, Keluhan
   dao/        akses database (placeholder)
   service/    logika bisnis/transaksi (placeholder)
   servlet/    HealthServlet (satu-satunya servlet saat ini)
   filter/     EncodingFilter (placeholder untuk filter lain)
-  util/       utilitas (placeholder)
+  util/       Flash, Validator, Pagination, RupiahFormatter, TanggalFormatter
 src/main/webapp/
   WEB-INF/web.xml
   WEB-INF/views/layout/   head.jspf
