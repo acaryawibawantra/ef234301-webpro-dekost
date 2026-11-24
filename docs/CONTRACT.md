@@ -23,13 +23,33 @@ parameter form **belum diisi**; akan disepakati tim pada akhir Fase 1.
 
 | Request attribute | Tipe | Keterangan |
 |---|---|---|
-| | | |
+| `kamarList` | `List<Kamar>` | Hasil pencarian yang sudah dipaginasi; tiap kamar juga memiliki `tipeKamarNama` |
+| `tipeKamarOptions` | `List<TipeKamar>` | Pilihan tipe kamar untuk form |
+| `pagination` | `Pagination` | Metadata pagination, 10 baris per halaman |
+| `q` | String | Nilai pencarian nomor kamar yang sudah di-trim |
+| `status` | String | Filter status aktif |
+| `form` | `Kamar` | Nilai form tambah/ubah, termasuk nilai input saat validasi gagal |
+| `errors` | `Map<String, String>` | Pesan validasi per nama field atau `general` |
+| `pageTitle` | String | Judul halaman: `Kamar` |
+| `activeNav` | String | Item sidebar aktif: `kamar` |
+| `flash` | `Flash.Message` | Pesan setelah operasi POST berhasil/gagal |
 
 ### Parameter form
 
 | Parameter form | Tipe | Aturan |
 |---|---|---|
-| | | |
+| `nomorKamar` | String | Wajib, maksimal 10 karakter, unik |
+| `lantai` | Integer | Wajib, bilangan bulat lebih besar dari 0 |
+| `tipeKamarId` | Integer | Wajib, harus menunjuk tipe kamar yang ada |
+| `status` | String | Saat dibuat: `TERSEDIA` (default) atau `PERBAIKAN`; saat diubah hanya untuk status manual `TERSEDIA`/`PERBAIKAN`, bukan `TERISI` |
+| `catatan` | String | Opsional |
+| `id` | Integer | Wajib untuk update/delete |
+| `_csrf` | String | Wajib untuk semua POST; token harus cocok dengan sesi |
+
+`GET /admin/kamar` menerima `q`, `status`, `page`, dan `edit=ID`. Operasi perubahan memakai
+`POST /admin/kamar/create`, `/update`, dan `/delete`. Status `TERISI`/`TERSEDIA` dikelola
+transaksi penghuni; perubahan manual hanya mengubah status ke/dari `PERBAIKAN`. Kamar dengan
+penghuni berstatus `AKTIF` tidak dapat dihapus.
 
 ## Penghuni
 
@@ -37,13 +57,35 @@ parameter form **belum diisi**; akan disepakati tim pada akhir Fase 1.
 
 | Request attribute | Tipe | Keterangan |
 |---|---|---|
-| | | |
+| `penghuniList` | `List<Penghuni>` | Hasil pencarian yang sudah dipaginasi |
+| `kamarOptions` | `List<Kamar>` | Kamar tersedia; kamar saat ini juga disertakan saat membuka form edit |
+| `pagination` | `Pagination` | Metadata pagination, 10 baris per halaman |
+| `q` | String | Nilai pencarian nama/nomor HP/nomor kamar yang sudah di-trim |
+| `status` | String | Filter status aktif |
+| `form` | `Penghuni` | Nilai form check-in/ubah/pindah, termasuk input saat validasi gagal |
+| `errors` | `Map<String, String>` | Pesan validasi per nama field atau `general` |
+| `pageTitle` | String | Judul halaman: `Penghuni` |
+| `activeNav` | String | Item sidebar aktif: `penghuni` |
+| `flash` | `Flash.Message` | Pesan setelah operasi POST berhasil/gagal |
 
 ### Parameter form
 
 | Parameter form | Tipe | Aturan |
 |---|---|---|
-| | | |
+| `namaLengkap` | String | Wajib, maksimal 100 karakter |
+| `noHp` | String | Wajib, 9–15 digit |
+| `pekerjaanInstansi` | String | Opsional, maksimal 100 karakter |
+| `kontakDarurat` | String | Opsional, maksimal 100 karakter |
+| `tanggalMasuk` | Date | Wajib, format ISO `yyyy-MM-dd` |
+| `kamarId` | Integer | Wajib untuk check-in/pindah; hanya kamar tersedia yang dapat dipilih |
+| `id` | Integer | Wajib untuk update/check-out |
+| `tanggalKeluar` | Date | Opsional saat check-out; default tanggal hari ini dan tidak boleh sebelum tanggal masuk |
+| `_csrf` | String | Wajib untuk semua POST; token harus cocok dengan sesi |
+
+`GET /admin/penghuni` menerima `q`, `status`, `page`, dan `edit=ID`. Check-in memakai
+`POST /admin/penghuni/create`, update/pindah memakai `/update`, dan check-out memakai
+`/checkout`. Check-in, pindah kamar, dan check-out mengubah data penghuni serta status kamar
+dalam satu transaksi; kamar `PERBAIKAN` atau yang sudah memiliki penempatan tidak dapat dipilih.
 
 ## Pembayaran
 
@@ -79,13 +121,29 @@ parameter form **belum diisi**; akan disepakati tim pada akhir Fase 1.
 
 | Request attribute | Tipe | Keterangan |
 |---|---|---|
-| | | |
+| `tipeKamarList` | `List<TipeKamar>` | Hasil pencarian yang sudah dipaginasi |
+| `pagination` | `Pagination` | Metadata pagination, 10 baris per halaman |
+| `q` | String | Nilai pencarian nama yang sudah di-trim |
+| `form` | `TipeKamar` | Nilai form tambah/ubah, termasuk nilai input saat validasi gagal |
+| `errors` | `Map<String, String>` | Pesan validasi per nama field atau `general` |
+| `pageTitle` | String | Judul halaman: `Tipe Kamar` |
+| `activeNav` | String | Item sidebar aktif: `tipe-kamar` |
+| `flash` | `Flash.Message` | Pesan setelah operasi POST berhasil/gagal |
 
 ### Parameter form
 
 | Parameter form | Tipe | Aturan |
 |---|---|---|
-| | | |
+| `nama` | String | Wajib, maksimal 50 karakter, unik |
+| `hargaBulanan` | Decimal | Wajib, 0 atau lebih, maksimal 10 digit dan 2 angka desimal |
+| `luasM2` | Integer | Wajib, bilangan bulat lebih besar dari 0 |
+| `fasilitas` | String | Opsional |
+| `id` | Integer | Wajib untuk update/delete |
+| `_csrf` | String | Wajib untuk semua POST; token harus cocok dengan sesi |
+
+`GET /admin/tipe-kamar` menerima `q`, `page`, dan `edit=ID`. Operasi perubahan memakai
+`POST /admin/tipe-kamar/create`, `/update`, dan `/delete`. Penghapusan ditolak jika tipe
+kamar masih direferensikan oleh kamar.
 
 ## Landing
 

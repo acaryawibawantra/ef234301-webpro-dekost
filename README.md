@@ -57,9 +57,10 @@ Hentikan dengan `docker compose down` (tambahkan `-v` untuk menghapus volume dat
 src/main/java/id/dekost/
   config/     Database.java (HikariCP, env var)
   model/      User, TipeKamar, Kamar, Penghuni, Pembayaran, Keluhan
-  dao/        akses database (UserDao dan DAO entitas lain)
-  service/    logika bisnis/transaksi (AuthService dan service entitas lain)
-  servlet/    LandingServlet, AuthServlet (login/logout), HealthServlet
+  dao/        akses database (UserDao, KamarDao, PenghuniDao, dan DAO entitas lain)
+  service/    logika bisnis/transaksi (AuthService, PenghuniService, dan service lain)
+  servlet/    LandingServlet, AuthServlet, KamarServlet, PenghuniServlet,
+              TipeKamarServlet, HealthServlet
   filter/     EncodingFilter, AuthFilter, CsrfFilter
   util/       Flash, Validator, Pagination, RupiahFormatter, TanggalFormatter
 src/main/webapp/

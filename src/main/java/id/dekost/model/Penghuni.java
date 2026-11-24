@@ -7,6 +7,7 @@ public class Penghuni {
     private Integer id;
     private Integer userId;
     private Integer kamarId;
+    private String nomorKamar;
     private String namaLengkap;
     private String noHp;
     private String pekerjaanInstansi;
@@ -21,9 +22,17 @@ public class Penghuni {
     public Penghuni(Integer id, Integer userId, Integer kamarId, String namaLengkap, String noHp,
                     String pekerjaanInstansi, String kontakDarurat, LocalDate tanggalMasuk,
                     LocalDate tanggalKeluar, String status) {
+        this(id, userId, kamarId, null, namaLengkap, noHp, pekerjaanInstansi, kontakDarurat,
+                tanggalMasuk, tanggalKeluar, status);
+    }
+
+    public Penghuni(Integer id, Integer userId, Integer kamarId, String nomorKamar,
+                    String namaLengkap, String noHp, String pekerjaanInstansi, String kontakDarurat,
+                    LocalDate tanggalMasuk, LocalDate tanggalKeluar, String status) {
         this.id = id;
         this.userId = userId;
         this.kamarId = kamarId;
+        this.nomorKamar = nomorKamar;
         this.namaLengkap = namaLengkap;
         this.noHp = noHp;
         this.pekerjaanInstansi = pekerjaanInstansi;
@@ -55,6 +64,14 @@ public class Penghuni {
 
     public void setKamarId(Integer kamarId) {
         this.kamarId = kamarId;
+    }
+
+    public String getNomorKamar() {
+        return nomorKamar;
+    }
+
+    public void setNomorKamar(String nomorKamar) {
+        this.nomorKamar = nomorKamar;
     }
 
     public String getNamaLengkap() {
