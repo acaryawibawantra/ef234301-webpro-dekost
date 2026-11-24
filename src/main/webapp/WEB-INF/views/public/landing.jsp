@@ -21,7 +21,7 @@
             <a class="site-header__link" href="#kontak">Kontak</a>
         </nav>
 
-        <a class="site-header__cta" href="#kontak">Booking kamar</a>
+        <a class="button button--primary" href="#kontak">Booking kamar</a>
     </header>
 
     <main class="landing__main">
@@ -35,7 +35,7 @@
                     Kamar bersih, lingkungan aman, dan pengelolaan transparan.
                     Cek kamar yang tersedia dan pesan langsung dari satu halaman.
                 </p>
-                <a class="hero__cta" href="#tipe-kamar">Lihat kamar kosong</a>
+                <a class="button button--accent" href="#tipe-kamar">Lihat kamar kosong</a>
             </div>
 
             <%-- Angka masih statis; akan dihubungkan ke data kamar pada tahap berikutnya. --%>

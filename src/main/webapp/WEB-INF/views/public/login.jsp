@@ -33,27 +33,27 @@
                     <p class="login__error" role="alert"><c:out value="${error}"/></p>
                 </c:if>
 
-                <div class="login__field">
-                    <label for="email">Email</label>
-                    <input type="email" id="email" name="email"
+                <div class="field">
+                    <label class="field__label" for="email">Email</label>
+                    <input class="field__input" type="email" id="email" name="email"
                            placeholder="nama@email.com" autocomplete="username" required>
                 </div>
 
-                <div class="login__field">
-                    <label for="password">Password</label>
-                    <input type="password" id="password" name="password"
+                <div class="field">
+                    <label class="field__label" for="password">Password</label>
+                    <input class="field__input" type="password" id="password" name="password"
                            placeholder="Masukkan password" autocomplete="current-password" required>
                 </div>
 
                 <div class="login__options">
-                    <label class="login__remember">
+                    <label class="checkbox">
                         <input type="checkbox" name="remember" value="true">
                         <span>Ingat saya</span>
                     </label>
                     <a class="login__forgot" href="#">Lupa password?</a>
                 </div>
 
-                <button class="login__submit" type="submit">Masuk</button>
+                <button class="button button--primary button--block" type="submit">Masuk</button>
             </form>
 
             <p class="login__note">Penghuni masuk dengan akun yang dibuat pengelola.</p>
