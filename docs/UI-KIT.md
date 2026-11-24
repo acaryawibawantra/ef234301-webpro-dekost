@@ -144,6 +144,16 @@ Tambahkan `aria-invalid="true"` pada input yang error. Checkbox memakai `.checkb
 </div>
 ```
 
+## Shell admin
+
+Markup dan aturan halaman admin ada di [`docs/ADMIN-SPEC.md`](ADMIN-SPEC.md).
+Class bantu yang tersedia:
+
+- `.admin-layout`, `.admin-main`, `.admin-content`
+- `.admin-grid--stats` untuk 4 stat card (2 kolom di ≤1100px, 1 kolom di ≤720px)
+- `.admin-grid--content` untuk tabel + panel samping 400px
+- `.toolbar`, `.toolbar__group`, `.chip` (+ `.is-active`) untuk filter list
+
 ## Catatan
 
 - Jangan menulis warna/ukuran baru di JSP; pakai token dan class di `components.css`.

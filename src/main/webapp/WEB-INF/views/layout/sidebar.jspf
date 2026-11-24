@@ -1,0 +1,118 @@
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<c:set var="ctx" value="${pageContext.request.contextPath}"/>
+<aside class="sidebar" aria-label="Navigasi panel pengelola">
+    <a class="sidebar__brand" href="${ctx}/admin/dashboard">
+        <span class="sidebar__logo">
+            <img src="${ctx}/assets/img/logo-mark.svg" alt="" width="22" height="22">
+        </span>
+        <span class="sidebar__brand-text">
+            <span class="sidebar__brand-name">De&rsquo; Kost</span>
+            <span class="sidebar__brand-sub">Panel pengelola</span>
+        </span>
+    </a>
+
+    <p class="sidebar__menu-label">Menu</p>
+
+    <nav class="sidebar__nav">
+        <a class="sidebar__link ${activeNav eq 'dashboard' ? 'is-active' : ''}"
+           href="${ctx}/admin/dashboard">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"
+                 stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="3" y="3" width="7" height="7" rx="1"/>
+                <rect x="14" y="3" width="7" height="7" rx="1"/>
+                <rect x="3" y="14" width="7" height="7" rx="1"/>
+                <rect x="14" y="14" width="7" height="7" rx="1"/>
+            </svg>
+            <span>Dashboard</span>
+        </a>
+
+        <a class="sidebar__link ${activeNav eq 'kamar' ? 'is-active' : ''}"
+           href="${ctx}/admin/kamar">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"
+                 stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M3 18V8a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v10"/>
+                <path d="M3 14h18"/>
+                <path d="M3 18v2"/>
+                <path d="M21 18v2"/>
+                <path d="M16 8h3a2 2 0 0 1 2 2v4"/>
+            </svg>
+            <span>Kamar</span>
+        </a>
+
+        <a class="sidebar__link ${activeNav eq 'tipe-kamar' ? 'is-active' : ''}"
+           href="${ctx}/admin/tipe-kamar">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"
+                 stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="m12 2 9 5-9 5-9-5 9-5Z"/>
+                <path d="m3 12 9 5 9-5"/>
+                <path d="m3 17 9 5 9-5"/>
+            </svg>
+            <span>Tipe kamar</span>
+        </a>
+
+        <a class="sidebar__link ${activeNav eq 'penghuni' ? 'is-active' : ''}"
+           href="${ctx}/admin/penghuni">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"
+                 stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+                <circle cx="9" cy="7" r="4"/>
+                <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+            <span>Penghuni</span>
+        </a>
+
+        <a class="sidebar__link ${activeNav eq 'pembayaran' ? 'is-active' : ''}"
+           href="${ctx}/admin/pembayaran">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"
+                 stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="2" y="5" width="20" height="14" rx="2"/>
+                <path d="M2 10h20"/>
+            </svg>
+            <span>Pembayaran</span>
+        </a>
+
+        <a class="sidebar__link ${activeNav eq 'keluhan' ? 'is-active' : ''}"
+           href="${ctx}/admin/keluhan">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"
+                 stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2Z"/>
+            </svg>
+            <span>Keluhan</span>
+        </a>
+    </nav>
+
+    <div class="sidebar__spacer"></div>
+
+    <div class="sidebar__user">
+        <span class="sidebar__avatar">PK</span>
+        <span class="sidebar__user-text">
+            <span class="sidebar__user-name">
+                <c:choose>
+                    <c:when test="${not empty sessionScope.user}">
+                        <c:out value="${sessionScope.user.nama}"/>
+                    </c:when>
+                    <c:otherwise>Pengelola Kos</c:otherwise>
+                </c:choose>
+            </span>
+            <span class="sidebar__user-email">
+                <c:choose>
+                    <c:when test="${not empty sessionScope.user}">
+                        <c:out value="${sessionScope.user.email}"/>
+                    </c:when>
+                    <c:otherwise>admin@kos.test</c:otherwise>
+                </c:choose>
+            </span>
+        </span>
+    </div>
+
+    <a class="sidebar__logout" href="${ctx}/logout">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"
+             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+            <path d="m16 17 5-5-5-5"/>
+            <path d="M21 12H9"/>
+        </svg>
+        <span>Keluar</span>
+    </a>
+</aside>
