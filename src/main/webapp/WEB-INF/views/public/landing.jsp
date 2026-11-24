@@ -113,6 +113,29 @@
                 </div>
             </article>
         </section>
+
+        <section class="numbers" aria-label="De' Kost dalam angka">
+            <p class="numbers__title">Beberapa fakta tentang kami dalam angka</p>
+
+            <div class="numbers__row">
+                <div class="stat">
+                    <p class="stat__value">24</p>
+                    <p class="stat__label">Kamar tersedia</p>
+                </div>
+                <div class="stat">
+                    <p class="stat__value">96%</p>
+                    <p class="stat__label">Tingkat hunian</p>
+                </div>
+                <div class="stat">
+                    <p class="stat__value">24 jam</p>
+                    <p class="stat__label">Akses dan keamanan</p>
+                </div>
+                <div class="stat">
+                    <p class="stat__value">Rp1,2 jt</p>
+                    <p class="stat__label">Mulai dari per bulan</p>
+                </div>
+            </div>
+        </section>
     </main>
 </div>
 </body>
