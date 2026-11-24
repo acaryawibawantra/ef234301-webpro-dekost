@@ -189,6 +189,42 @@
                 </article>
             </div>
         </section>
+
+        <section class="closing" id="kontak" aria-labelledby="closing-title">
+            <div class="closing__cta">
+                <div class="closing__intro">
+                    <p class="closing__eyebrow">Kontak</p>
+                    <h2 class="closing__title" id="closing-title">Siap pindah minggu ini?</h2>
+                    <p class="closing__text">
+                        Hubungi pengelola untuk survei kamar. Kami balas di hari yang sama.
+                    </p>
+                    <a class="button button--accent"
+                       href="https://wa.me/6281234567890" rel="noopener">Hubungi pengelola</a>
+                </div>
+
+                <dl class="closing__details">
+                    <div class="closing__detail">
+                        <dt>Alamat</dt>
+                        <dd>Jl. Contoh Raya No. 12, Surabaya</dd>
+                    </div>
+                    <div class="closing__detail">
+                        <dt>WhatsApp</dt>
+                        <dd>0812-3456-7890</dd>
+                    </div>
+                    <div class="closing__detail">
+                        <dt>Jam respon</dt>
+                        <dd>Setiap hari, 08.00 &ndash; 21.00 WIB</dd>
+                    </div>
+                </dl>
+            </div>
+
+            <div class="closing__photo">
+                <footer class="site-footer">
+                    <p>&copy; 2026 De&rsquo; Kost. Semua hak dilindungi.</p>
+                    <a href="${pageContext.request.contextPath}/login">Masuk sebagai pengelola</a>
+                </footer>
+            </div>
+        </section>
     </main>
 </div>
 </body>
