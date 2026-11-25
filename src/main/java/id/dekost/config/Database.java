@@ -3,6 +3,7 @@ package id.dekost.config;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
+import java.net.URI;
 import java.sql.Connection;
 import java.sql.SQLException;
 
@@ -20,9 +21,15 @@ public final class Database {
                 local = dataSource;
                 if (local == null) {
                     HikariConfig config = new HikariConfig();
+<<<<<<< HEAD
+                    config.setJdbcUrl(normalizeJdbcUrl(env("DB_URL", DEFAULT_URL)));
+                    config.setUsername(env("DB_USER", DEFAULT_USER));
+                    config.setPassword(env("DB_PASSWORD", DEFAULT_PASSWORD));
+=======
                     config.setJdbcUrl(requiredEnv("DB_URL"));
                     config.setUsername(requiredEnv("DB_USER"));
                     config.setPassword(requiredEnv("DB_PASSWORD"));
+>>>>>>> d36df0c998ad56112dc7b75bc21d657dcb0409a6
                     config.setDriverClassName("org.postgresql.Driver");
                     config.setMaximumPoolSize(10);
                     config.setMinimumIdle(2);
@@ -56,5 +63,36 @@ public final class Database {
             throw new IllegalStateException("Environment variable " + key + " must be set.");
         }
         return value;
+    }
+
+    static String normalizeJdbcUrl(String value) {
+        if (value.startsWith("jdbc:postgresql://")) {
+            return value;
+        }
+
+        try {
+            URI uri = URI.create(value);
+            String scheme = uri.getScheme();
+            if (!"postgres".equalsIgnoreCase(scheme)
+                    && !"postgresql".equalsIgnoreCase(scheme)) {
+                throw new IllegalArgumentException();
+            }
+
+            String host = uri.getHost();
+            String path = uri.getRawPath();
+            if (host == null || path == null || path.length() < 2) {
+                throw new IllegalArgumentException();
+            }
+            if (host.indexOf(':') >= 0 && !host.startsWith("[")) {
+                host = "[" + host + "]";
+            }
+
+            int port = uri.getPort() < 0 ? 5432 : uri.getPort();
+            String query = uri.getRawQuery() == null ? "" : "?" + uri.getRawQuery();
+            return "jdbc:postgresql://" + host + ":" + port + path + query;
+        } catch (IllegalArgumentException ignored) {
+            throw new IllegalStateException(
+                    "DB_URL must be a PostgreSQL JDBC URL or PostgreSQL connection URL.");
+        }
     }
 }

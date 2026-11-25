@@ -24,6 +24,17 @@ services:
       postgres:
         condition: service_healthy
     environment:
+<<<<<<< HEAD
+      DB_URL: jdbc:postgresql://postgres:5432/dekost
+      DB_USER: dekost
+      DB_PASSWORD: dekost
+      PORT: ${PORT:-8080}
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@kos.test}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:?Set ADMIN_PASSWORD in .env or the environment}
+      WA_NUMBER: "000000000000"
+    ports:
+      - "${PORT:-8080}:${PORT:-8080}"
+=======
       DB_URL: ${DB_URL:-jdbc:postgresql://postgres:5432/dekost}
       DB_USER: ${POSTGRES_USER:-dekost}
       DB_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env or the deployment environment}
@@ -31,6 +42,7 @@ services:
     ports:
       - "${APP_PORT:-8080}:8080"
     restart: unless-stopped
+>>>>>>> d36df0c998ad56112dc7b75bc21d657dcb0409a6
 
 volumes:
   pgdata:

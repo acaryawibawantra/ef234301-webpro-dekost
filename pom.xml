@@ -72,6 +72,19 @@
 
     <build>
         <finalName>ROOT</finalName>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+            <resource>
+                <directory>db</directory>
+                <includes>
+                    <include>schema.sql</include>
+                    <include>seed.sql</include>
+                </includes>
+                <targetPath>db</targetPath>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
