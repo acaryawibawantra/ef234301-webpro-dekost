@@ -3,7 +3,7 @@
     <c:if test="${not empty flash}">
         <c:choose>
             <c:when test="${flash.type eq 'error'}">
-                <p class="toast toast--error" role="status"><c:out value="${flash.text}"/></p>
+                <p class="toast toast--error" role="alert" data-toast-timeout="8000"><c:out value="${flash.text}"/></p>
             </c:when>
             <c:when test="${flash.type eq 'warning'}">
                 <p class="toast toast--warning" role="status"><c:out value="${flash.text}"/></p>
