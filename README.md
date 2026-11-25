@@ -63,44 +63,6 @@ Nilai default untuk demo sudah disiapkan di `.env.example`. Akun penghuni dibuat
 - Tomcat 10.1
 - Docker & Docker Compose
 
-## Menjalankan dengan Docker
-
-Salin konfigurasi demo, lalu jalankan:
-
-```bash
-cp .env.example .env
-docker compose up --build
-```
-
-- Aplikasi: <http://localhost:8080>
-- Health check: <http://localhost:8080/health>
-
-Saat database masih kosong, aplikasi otomatis membuat schema, akun admin dari
-`ADMIN_EMAIL`/`ADMIN_PASSWORD`, dan data contoh dari `db/seed.sql`.
-Schema aman dijalankan ulang, jadi redeploy tidak menghapus data.
-
-Reset database (menghapus semua data):
-
-```bash
-docker compose down -v
-docker compose up --build
-```
-
-## Menjalankan tanpa Docker
-
-1. Buat database:
-   ```bash
-   createdb dekost
-   ```
-2. Set environment variable: `DB_URL`, `DB_USER`, `DB_PASSWORD`, `ADMIN_EMAIL`,
-   `ADMIN_PASSWORD`, dan `WA_NUMBER` (contoh di `.env.example`). Schema dan data
-   contoh dibuat otomatis saat aplikasi pertama kali terhubung.
-3. Build:
-   ```bash
-   mvn clean package
-   ```
-4. Deploy `target/ROOT.war` ke Tomcat 10.1, lalu buka <http://localhost:8080>.
-
 ## Deploy
 
 **Railway:** deploy repo sebagai Docker service, tambahkan PostgreSQL, lalu isi
@@ -119,27 +81,6 @@ konfigurasi service. Siapkan `.env` di server (jangan di-commit) dengan nilai
 yang sama seperti di atas.
 
 Gunakan password yang lebih kuat untuk deployment produksi.
-
-## Struktur Singkat
-
-```text
-src/main/java/id/dekost/
-  config/    koneksi database, inisialisasi schema/seed
-  model/     User, TipeKamar, Kamar, Penghuni, Pembayaran, Keluhan
-  dao/       akses database
-  service/   logika bisnis dan transaksi
-  servlet/   controller admin, penghuni, auth, dan landing
-  filter/    autentikasi, otorisasi role, CSRF, encoding
-  util/      flash message, validasi, pagination, format Rupiah/tanggal
-
-src/main/webapp/
-  WEB-INF/views/   JSP admin, penghuni, publik, dan layout
-  assets/          CSS, JavaScript, gambar
-
-db/
-  schema.sql   DDL
-  seed.sql     data contoh + akun penghuni
-```
 
 ## Keamanan
 
