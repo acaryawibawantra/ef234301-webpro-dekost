@@ -1001,3 +1001,144 @@
     display: none;
   }
 }
+
+/* ---------- Dashboard admin ---------- */
+
+.admin-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-24);
+  min-width: 0;
+}
+
+.card--compact {
+  padding: var(--space-24);
+}
+
+.panel-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-12);
+  margin-bottom: var(--space-16);
+}
+
+.panel-head__title {
+  color: var(--ink);
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+.panel-head__link {
+  color: var(--accent);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.45;
+  white-space: nowrap;
+}
+
+.panel-head__link:hover,
+.panel-head__link:focus-visible {
+  color: var(--accent-dark);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.occupancy-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-16);
+}
+
+.occupancy-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+.occupancy-item__meta {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-12);
+  color: var(--ink-2);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.occupancy-item__count {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.occupancy-progress {
+  display: block;
+  width: 100%;
+  height: 8px;
+  border: 0;
+  border-radius: var(--radius-pill);
+  background-color: var(--surface-2);
+  overflow: hidden;
+  appearance: none;
+}
+
+.occupancy-progress::-webkit-progress-bar {
+  background-color: var(--surface-2);
+  border-radius: var(--radius-pill);
+}
+
+.occupancy-progress::-webkit-progress-value {
+  background-color: var(--accent);
+  border-radius: var(--radius-pill);
+}
+
+.occupancy-progress::-moz-progress-bar {
+  background-color: var(--accent);
+  border-radius: var(--radius-pill);
+}
+
+.complaint-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-16);
+}
+
+.complaint-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  padding-top: var(--space-16);
+  border-top: 1px solid var(--border);
+}
+
+.complaint-item:first-child {
+  padding-top: 0;
+  border-top: 0;
+}
+
+.complaint-item__top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-12);
+}
+
+.complaint-item__title {
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.complaint-item__badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-8);
+}
+
+.complaint-item__meta {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.45;
+}
