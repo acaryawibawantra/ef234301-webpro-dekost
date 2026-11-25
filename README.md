@@ -46,6 +46,21 @@ docker compose up --build
 
 Hentikan tanpa menghapus data dengan `docker compose down`.
 
+### Deploy langsung di Render
+
+Setelah repo tersedia di GitHub, pilih **New → Blueprint** di Render lalu pilih
+repo dan branch. Render membaca `render.yaml` untuk membuat Web Service Docker
+dan PostgreSQL sekaligus. Web Service memakai `Dockerfile`; saat pertama kali
+terhubung ke database kosong, aplikasi membuat skema dan akun admin otomatis.
+Email awalnya `admin@kos.test`; password acak tersimpan di environment service
+sebagai `ADMIN_PASSWORD`, dan dapat dilihat di pengaturan environment Render.
+
+Health check sudah diarahkan ke `/health`, dan Render diberi port `8080`. Render
+PostgreSQL free hanya berlaku 30 hari; gunakan database berbayar atau database
+eksternal bila perlu menyimpan data lebih lama. Web Service free dapat tidur
+setelah tidak menerima trafik. Deploy database ini tidak memasukkan data contoh
+penghuni/kamar dari `seed.sql`.
+
 ### Deploy di DomCloud
 
 Pada Setup → Deploy, aktifkan Docker dan gunakan konfigurasi deployment:

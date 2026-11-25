@@ -1,0 +1,33 @@
+services:
+  - type: web
+    name: dekost-app
+    runtime: docker
+    plan: free
+    healthCheckPath: /health
+    envVars:
+      - key: PORT
+        value: "8080"
+      - key: DB_URL
+        fromDatabase:
+          name: dekost-db
+          property: connectionString
+      - key: DB_USER
+        fromDatabase:
+          name: dekost-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: dekost-db
+          property: password
+      - key: ADMIN_EMAIL
+        value: admin@kos.test
+      - key: ADMIN_PASSWORD
+        generateValue: true
+      - key: WA_NUMBER
+        value: "000000000000"
+
+databases:
+  - name: dekost-db
+    databaseName: dekost
+    user: dekost
+    plan: free
