@@ -16,13 +16,13 @@ import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -38,7 +38,6 @@ public class DashboardServlet extends HttpServlet {
             DateTimeFormatter.ofPattern("EEEE, d MMMM uuuu", ID_LOCALE);
     private static final DateTimeFormatter MONTH_FORMAT =
             DateTimeFormatter.ofPattern("MMMM", ID_LOCALE);
-    private static final BigDecimal ONE_MILLION = BigDecimal.valueOf(1_000_000L);
 
     private final DashboardDao dashboardDao = new DashboardDao();
 
@@ -101,11 +100,11 @@ public class DashboardServlet extends HttpServlet {
             request.setAttribute("maintenanceRooms", maintenanceRooms);
             request.setAttribute("currentMonthName", MONTH_FORMAT.format(nowJakarta));
             request.setAttribute("monthlyRevenueFormatted", formatRupiah(monthlyRevenue));
-            request.setAttribute("monthlyRevenueCompact", formatCompactRupiah(monthlyRevenue));
+            request.setAttribute("monthlyRevenueCompact", RupiahFormatter.formatCompact(monthlyRevenue));
             request.setAttribute("overdueTotalFormatted",
                     formatRupiah(overdueBilling == null ? null : overdueBilling.totalJumlah()));
             request.setAttribute("overdueTotalCompact",
-                    formatCompactRupiah(overdueBilling == null ? null : overdueBilling.totalJumlah()));
+                    RupiahFormatter.formatCompact(overdueBilling == null ? null : overdueBilling.totalJumlah()));
             request.setAttribute("paymentAmounts", paymentAmounts);
             request.setAttribute("paymentDueDates", paymentDueDates);
             request.setAttribute("paymentInitials", paymentInitials);
@@ -132,7 +131,15 @@ public class DashboardServlet extends HttpServlet {
     }
 
     private static String buildGreeting(HttpServletRequest request, LocalTime time) {
-        int hour = time.getHour();
+        String rawName = null;
+        HttpSession session = request.getSession(false);
+        if (session != null && session.getAttribute(AuthServlet.USER_SESSION_ATTRIBUTE) instanceof User user) {
+            rawName = user.getNama();
+        }
+        return buildGreetingForHour(rawName, time.getHour());
+    }
+
+    static String buildGreetingForHour(String rawName, int hour) {
         String partOfDay;
         if (hour >= 4 && hour < 11) {
             partOfDay = "pagi";
@@ -145,12 +152,9 @@ public class DashboardServlet extends HttpServlet {
         }
 
         String displayName = "Pengelola";
-        HttpSession session = request.getSession(false);
-        if (session != null && session.getAttribute(AuthServlet.USER_SESSION_ATTRIBUTE) instanceof User user) {
-            String nama = user.getNama() == null ? "" : user.getNama().trim();
-            if (!nama.isEmpty() && !"Pengelola Kos".equalsIgnoreCase(nama)) {
-                displayName = nama;
-            }
+        String nama = rawName == null ? "" : rawName.trim();
+        if (!nama.isEmpty() && !"Pengelola Kos".equalsIgnoreCase(nama)) {
+            displayName = nama;
         }
         return "Selamat " + partOfDay + ", " + displayName;
     }
@@ -159,33 +163,55 @@ public class DashboardServlet extends HttpServlet {
         return amount == null ? RupiahFormatter.format(BigDecimal.ZERO) : RupiahFormatter.format(amount);
     }
 
-    private static String formatCompactRupiah(BigDecimal amount) {
-        if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
-            return RupiahFormatter.format(BigDecimal.ZERO);
-        }
-        if (amount.compareTo(ONE_MILLION) < 0) {
-            return RupiahFormatter.format(amount);
-        }
-        BigDecimal millions = amount.divide(ONE_MILLION, 1, RoundingMode.HALF_UP);
-        String formatted = String.format(ID_LOCALE, "%.1f", millions);
-        if (formatted.endsWith(",0")) {
-            formatted = formatted.substring(0, formatted.length() - 2);
-        }
-        return "Rp " + formatted + " jt";
-    }
-
-    private static String extractInitials(String name) {
-        if (name == null || name.isBlank()) {
+    static String extractInitials(String name) {
+        if (name == null || name.isEmpty()) {
             return "?";
         }
-        String[] parts = name.trim().split("\\s+");
-        if (parts.length == 1) {
-            String token = parts[0].toUpperCase(ID_LOCALE);
-            return token.length() >= 2 ? token.substring(0, 2) : token;
+        String[] rawTokens = name.split("[\\s\\p{Z}]+");
+        List<String> cleanTokens = new ArrayList<>();
+        for (String token : rawTokens) {
+            String stripped = stripNonAlphanumeric(token);
+            if (!stripped.isEmpty()) {
+                cleanTokens.add(stripped);
+            }
         }
-        String first = parts[0].substring(0, 1).toUpperCase(ID_LOCALE);
-        String last = parts[parts.length - 1].substring(0, 1).toUpperCase(ID_LOCALE);
+        if (cleanTokens.isEmpty()) {
+            return "?";
+        }
+        if (cleanTokens.size() == 1) {
+            String single = cleanTokens.get(0).toUpperCase(ID_LOCALE);
+            int count = single.codePointCount(0, single.length());
+            int end = single.offsetByCodePoints(0, Math.min(2, count));
+            return single.substring(0, end);
+        }
+        String first = firstCodePoint(cleanTokens.get(0)).toUpperCase(ID_LOCALE);
+        String last = firstCodePoint(cleanTokens.get(cleanTokens.size() - 1)).toUpperCase(ID_LOCALE);
         return first + last;
+    }
+
+    private static String stripNonAlphanumeric(String token) {
+        int start = 0;
+        int len = token.length();
+        while (start < len) {
+            int cp = token.codePointAt(start);
+            if (Character.isLetterOrDigit(cp)) {
+                break;
+            }
+            start += Character.charCount(cp);
+        }
+        int end = len;
+        while (end > start) {
+            int cp = token.codePointBefore(end);
+            if (Character.isLetterOrDigit(cp)) {
+                break;
+            }
+            end -= Character.charCount(cp);
+        }
+        return token.substring(start, end);
+    }
+
+    private static String firstCodePoint(String text) {
+        return text.substring(0, text.offsetByCodePoints(0, 1));
     }
 
     private static String formatDate(LocalDate date) {
