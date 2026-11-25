@@ -29,9 +29,19 @@
             </c:if>
 
             <c:if test="${not empty pageActionLabel}">
-                <a class="button button--primary" href="${fn:escapeXml(pageActionHref)}">
-                    <c:out value="${pageActionLabel}"/>
-                </a>
+                <c:choose>
+                    <c:when test="${not empty pageActionModal}">
+                        <button class="button button--primary" type="button"
+                                data-modal-open="${fn:escapeXml(pageActionModal)}">
+                            <c:out value="${pageActionLabel}"/>
+                        </button>
+                    </c:when>
+                    <c:otherwise>
+                        <a class="button button--primary" href="${fn:escapeXml(pageActionHref)}">
+                            <c:out value="${pageActionLabel}"/>
+                        </a>
+                    </c:otherwise>
+                </c:choose>
             </c:if>
         </div>
     </c:if>

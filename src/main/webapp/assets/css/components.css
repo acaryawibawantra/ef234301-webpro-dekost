@@ -462,6 +462,12 @@
   color: var(--on-accent);
 }
 
+.pager__link--disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
 /* ---------- Modal ---------- */
 
 .modal {
@@ -503,6 +509,13 @@
   font-weight: 400;
   line-height: 1.15;
   letter-spacing: -0.01em;
+}
+
+.modal__subtitle {
+  margin-top: var(--space-4);
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.45;
 }
 
 .modal__close {
@@ -573,6 +586,20 @@
 .toast--warning {
   background-color: var(--warning-soft);
   color: var(--warning);
+}
+
+/* ---------- Alert ---------- */
+
+.alert {
+  padding: var(--space-12) var(--space-16);
+  border-radius: var(--radius-md);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.alert--error {
+  background-color: var(--danger-soft);
+  color: var(--danger);
 }
 
 /* ---------- Empty state ---------- */
