@@ -12,23 +12,30 @@ parameter form **belum diisi**; akan disepakati tim pada akhir Fase 1.
 | `roomOccupancy` | `Map<String, Long>` | Jumlah kamar berdasarkan status `TERSEDIA`, `TERISI`, dan `PERBAIKAN` |
 | `floorOccupancy` | `List<DashboardDao.FloorOccupancy>` | Jumlah kamar dan kamar terisi per lantai |
 | `monthlyRevenue` | `BigDecimal` | Total pembayaran berstatus `LUNAS` untuk periode bulan berjalan |
+| `currentMonthBilling` | `DashboardDao.CurrentMonthBillingSummary` | Jumlah tagihan berstatus `LUNAS` dan total tagihan untuk periode bulan berjalan |
 | `overdueBilling` | `DashboardDao.BillingSummary` | Jumlah dan total nominal tagihan belum lunas yang jatuh tempo sebelum hari ini |
 | `openComplaints` | `DashboardDao.OpenComplaintSummary` | Jumlah keluhan belum selesai dan jumlah berprioritas `TINGGI` |
-| `duePayments` | `List<Pembayaran>` | Maksimal 5 pembayaran belum lunas, diurutkan dari jatuh tempo terdekat; status tampilan dihitung dengan SQL `CASE` |
-| `recentComplaints` | `List<Keluhan>` | Maksimal 3 keluhan terbaru berdasarkan `created_at` |
+| `duePayments` | `List<Pembayaran>` | Maksimal 5 pembayaran belum lunas, diurutkan dari jatuh tempo terdekat; memuat `penghuniNoHp`; status tampilan dihitung dengan SQL `CASE` |
+| `recentComplaints` | `List<Keluhan>` | Maksimal 3 keluhan terbaru berdasarkan `created_at`; memuat `nomorKamar` |
 | `totalRooms` | `Long` | Jumlah total kamar (`TERSEDIA + TERISI + PERBAIKAN`) |
 | `occupiedRooms` | `Long` | Jumlah kamar berstatus `TERISI` |
 | `availableRooms` | `Long` | Jumlah kamar berstatus `TERSEDIA` |
 | `maintenanceRooms` | `Long` | Jumlah kamar berstatus `PERBAIKAN` |
+| `currentMonthName` | `String` | Nama bulan berjalan dalam Bahasa Indonesia |
 | `monthlyRevenueFormatted` | `String` | Format Rupiah untuk `monthlyRevenue` (`Rp0` jika null) |
+| `monthlyRevenueCompact` | `String` | Format Rupiah ringkas untuk kartu statistik (`Rp 25,4 jt` untuk `>= 1 jt`) |
 | `overdueTotalFormatted` | `String` | Format Rupiah untuk `overdueBilling.totalJumlah` (`Rp0` jika null) |
+| `overdueTotalCompact` | `String` | Format Rupiah ringkas untuk kartu statistik tagihan menunggak |
 | `paymentAmounts` | `Map<Integer, String>` | Nominal tagihan terformat Rupiah per `pembayaran.id` |
 | `paymentDueDates` | `Map<Integer, String>` | Tanggal jatuh tempo terformat (`d MMM uuuu`) per `pembayaran.id` |
+| `paymentInitials` | `Map<Integer, String>` | Inisial nama penghuni (2 huruf) per `pembayaran.id` |
 | `complaintDates` | `Map<Integer, String>` | Tanggal `createdAt` terformat (`d MMM uuuu`) per `keluhan.id` |
-| `pageTitle` | String | Judul halaman: `Dashboard` |
-| `pageSubtitle` | String | Ringkasan jumlah kamar dan kamar tersedia |
-| `pageActionLabel` | String | Label tombol aksi topbar: `Kelola kamar` |
-| `pageActionHref` | String | URL tombol aksi topbar (`/admin/kamar`) |
+| `pageTitle` | String | Sapaan waktu Indonesia + nama pengelola (`Selamat pagi, Pengelola`) |
+| `pageSubtitle` | String | Tanggal hari ini format Indonesia + ringkasan hunian bulan ini |
+| `pageSearchAction` | String | URL target form pencarian topbar (`/admin/penghuni`) |
+| `pageSearchPlaceholder` | String | Placeholder pencarian topbar (`Cari penghuni atau kamar`) |
+| `pageActionLabel` | String | Label tombol aksi topbar: `Tagihan baru` |
+| `pageActionHref` | String | URL tombol aksi topbar (`/admin/pembayaran`) |
 | `activeNav` | String | Item sidebar aktif: `dashboard` |
 | `flash` | `Flash.Message` | Pesan setelah operasi POST berhasil/gagal |
 
