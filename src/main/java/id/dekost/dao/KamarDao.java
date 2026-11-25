@@ -3,6 +3,7 @@ package id.dekost.dao;
 import id.dekost.config.Database;
 import id.dekost.model.Kamar;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -48,7 +49,8 @@ public class KamarDao {
     public long count(String query, String status) throws SQLException {
         String normalizedQuery = query == null ? "" : query.trim();
         String normalizedStatus = status == null ? "" : status.trim();
-        StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM kamar k");
+        StringBuilder sql = new StringBuilder(
+                "SELECT COUNT(*) FROM kamar k JOIN tipe_kamar tk ON tk.id = k.tipe_kamar_id");
         appendFilters(sql, normalizedQuery, normalizedStatus);
 
         try (Connection connection = Database.getConnection();
@@ -88,6 +90,43 @@ public class KamarDao {
                 kamarList.add(mapRow(result));
             }
             return kamarList;
+        }
+    }
+
+    public List<TypeAvailability> findAvailabilityByType() throws SQLException {
+        String sql = """
+                SELECT tk.id, tk.nama, tk.harga_bulanan, tk.luas_m2, tk.fasilitas,
+                       COUNT(k.id) AS total_kamar,
+                       COUNT(k.id) FILTER (
+                           WHERE k.status = 'TERSEDIA'
+                             AND NOT EXISTS (
+                                 SELECT 1 FROM penghuni p
+                                 WHERE p.kamar_id = k.id AND p.status = 'AKTIF'
+                             )
+                       ) AS kamar_tersedia,
+                       COUNT(k.id) FILTER (WHERE k.status = 'TERISI') AS kamar_terisi
+                FROM tipe_kamar tk
+                LEFT JOIN kamar k ON k.tipe_kamar_id = tk.id
+                GROUP BY tk.id, tk.nama, tk.harga_bulanan, tk.luas_m2, tk.fasilitas
+                ORDER BY tk.harga_bulanan, tk.nama
+                """;
+        try (Connection connection = Database.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql);
+             ResultSet result = statement.executeQuery()) {
+            List<TypeAvailability> availability = new ArrayList<>();
+            while (result.next()) {
+                availability.add(new TypeAvailability(
+                        result.getInt("id"),
+                        result.getString("nama"),
+                        result.getBigDecimal("harga_bulanan"),
+                        result.getInt("luas_m2"),
+                        result.getString("fasilitas"),
+                        result.getLong("total_kamar"),
+                        result.getLong("kamar_tersedia"),
+                        result.getLong("kamar_terisi")
+                ));
+            }
+            return availability;
         }
     }
 
@@ -238,7 +277,7 @@ public class KamarDao {
     private static void appendFilters(StringBuilder sql, String query, String status) {
         boolean hasFilter = false;
         if (!query.isEmpty()) {
-            sql.append(" WHERE k.nomor_kamar ILIKE ?");
+            sql.append(" WHERE (k.nomor_kamar ILIKE ? OR tk.nama ILIKE ?)");
             hasFilter = true;
         }
         if (!status.isEmpty()) {
@@ -250,7 +289,9 @@ public class KamarDao {
             throws SQLException {
         int parameterIndex = 1;
         if (!query.isEmpty()) {
-            statement.setString(parameterIndex++, "%" + query + "%");
+            String pattern = "%" + query + "%";
+            statement.setString(parameterIndex++, pattern);
+            statement.setString(parameterIndex++, pattern);
         }
         if (!status.isEmpty()) {
             statement.setString(parameterIndex++, status);
@@ -310,6 +351,53 @@ public class KamarDao {
             connection.rollback();
         } catch (SQLException rollbackError) {
             originalError.addSuppressed(rollbackError);
+        }
+    }
+
+    public record TypeAvailability(
+            int tipeKamarId,
+            String nama,
+            BigDecimal hargaBulanan,
+            int luasM2,
+            String fasilitas,
+            long totalKamar,
+            long kamarTersedia,
+            long kamarTerisi
+    ) {
+        public int getTipeKamarId() {
+            return tipeKamarId;
+        }
+
+        public String getNama() {
+            return nama;
+        }
+
+        public BigDecimal getHargaBulanan() {
+            return hargaBulanan;
+        }
+
+        public int getLuasM2() {
+            return luasM2;
+        }
+
+        public String getFasilitas() {
+            return fasilitas;
+        }
+
+        public long getTotalKamar() {
+            return totalKamar;
+        }
+
+        public long getKamarTersedia() {
+            return kamarTersedia;
+        }
+
+        public long getKamarTerisi() {
+            return kamarTerisi;
+        }
+
+        public boolean isPenuh() {
+            return kamarTersedia <= 0;
         }
     }
 

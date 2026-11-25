@@ -60,6 +60,117 @@
                 </article>
             </section>
 
+            <section class="card card--light card--compact" aria-label="Aksi cepat">
+                <header class="panel-head">
+                    <h2 class="panel-head__title">Aksi cepat</h2>
+                </header>
+
+                <div class="toolbar__group">
+                    <a class="button button--primary" href="${ctx}/admin/penghuni#penghuni-create-modal">Tambah penghuni</a>
+                    <a class="button button--secondary" href="${ctx}/admin/kamar#kamar-create-modal">Tambah kamar</a>
+                    <a class="button button--secondary" href="${ctx}/admin/tipe-kamar#tipe-kamar-create-modal">Tambah tipe kamar</a>
+                    <a class="button button--secondary" href="${ctx}/admin/pembayaran#pembayaran-create-modal">Catat pembayaran</a>
+                    <a class="button button--secondary" href="${ctx}/admin/keluhan#keluhan-create-modal">Catat keluhan</a>
+                    <a class="button button--secondary" href="${ctx}/admin/akun#akun-create-modal">Tambah akun</a>
+                </div>
+            </section>
+
+            <section class="table-card" aria-label="Ketersediaan kamar">
+                <header class="table-card__header">
+                    <div>
+                        <h2 class="table-card__title">Ketersediaan kamar</h2>
+                        <p class="table-card__subtitle">
+                            <c:out value="${empty availableRooms ? 0 : availableRooms}"/> dari
+                            <c:out value="${empty totalRooms ? 0 : totalRooms}"/> kamar siap dihuni saat ini
+                        </p>
+                    </div>
+                    <a class="panel-head__link" href="${ctx}/admin/kamar?status=TERSEDIA">Kelola kamar</a>
+                </header>
+
+                <c:choose>
+                    <c:when test="${empty typeAvailability}">
+                        <div class="empty-state">
+                            <h3 class="empty-state__title">Belum ada tipe kamar</h3>
+                            <p>
+                                Tambahkan tipe kamar lebih dulu, lalu daftarkan kamar agar ketersediaan
+                                hunian dapat dipantau dari sini.
+                            </p>
+                        </div>
+                    </c:when>
+                    <c:otherwise>
+                        <div class="table-wrap">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th>Tipe kamar</th>
+                                    <th>Harga / bulan</th>
+                                    <th>Tersedia</th>
+                                    <th>Total kamar</th>
+                                    <th>Okupansi</th>
+                                    <th class="table__cell--actions">Aksi</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <c:forEach var="type" items="${typeAvailability}">
+                                    <c:url var="filteredRoomsUrl" value="/admin/kamar">
+                                        <c:param name="status" value="TERSEDIA"/>
+                                        <c:param name="q" value="${type.nama}"/>
+                                    </c:url>
+                                    <tr>
+                                        <td><c:out value="${type.nama}"/></td>
+                                        <td>
+                                            <c:out value="${empty typeAvailabilityPrices[type.tipeKamarId] ? 'Rp0' : typeAvailabilityPrices[type.tipeKamarId]}"/>
+                                        </td>
+                                        <td>
+                                            <c:choose>
+                                                <c:when test="${type.kamarTersedia gt 0}">
+                                                    <span class="badge badge--success">
+                                                        <span class="badge__dot"></span><c:out value="${type.kamarTersedia}"/> tersedia
+                                                    </span>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <span class="badge badge--neutral">
+                                                        <span class="badge__dot"></span>Tidak tersedia
+                                                    </span>
+                                                </c:otherwise>
+                                            </c:choose>
+                                        </td>
+                                        <td class="table__cell--muted"><c:out value="${type.totalKamar}"/> kamar</td>
+                                        <td>
+                                            <div class="occupancy-item">
+                                                <div class="occupancy-item__meta">
+                                                    <span class="occupancy-item__count">
+                                                        <c:out value="${type.kamarTerisi}"/> / <c:out value="${type.totalKamar}"/> terisi
+                                                    </span>
+                                                </div>
+                                                <progress class="occupancy-progress"
+                                                          value="${type.kamarTerisi}"
+                                                          max="${type.totalKamar gt 0 ? type.totalKamar : 1}"
+                                                          aria-label="Okupansi ${fn:escapeXml(type.nama)}"></progress>
+                                            </div>
+                                        </td>
+                                        <td class="table__cell--actions">
+                                            <a class="table__action"
+                                               href="${fn:escapeXml(filteredRoomsUrl)}"
+                                               aria-label="Lihat kamar tersedia tipe ${fn:escapeXml(type.nama)}"
+                                               title="Lihat kamar">
+                                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                                                     stroke="currentColor" stroke-width="1.75"
+                                                     stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                                    <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/>
+                                                    <circle cx="12" cy="12" r="3"/>
+                                                </svg>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </c:forEach>
+                                </tbody>
+                            </table>
+                        </div>
+                    </c:otherwise>
+                </c:choose>
+            </section>
+
             <section class="admin-grid admin-grid--content" aria-label="Detail operasional">
                 <section class="table-card">
                     <header class="table-card__header">

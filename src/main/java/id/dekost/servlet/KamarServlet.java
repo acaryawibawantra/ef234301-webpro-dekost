@@ -313,7 +313,7 @@ public class KamarServlet extends HttpServlet {
         request.setAttribute("pageTitle", "Kamar");
         request.setAttribute("pageSubtitle", totalItems + " kamar");
         request.setAttribute("pageSearchAction", request.getContextPath() + LIST_PATH);
-        request.setAttribute("pageSearchPlaceholder", "Cari kamar");
+        request.setAttribute("pageSearchPlaceholder", "Cari nomor atau tipe kamar");
         request.setAttribute("pageActionLabel", "Tambah kamar");
         request.setAttribute("pageActionModal", "kamar-create-modal");
         request.setAttribute("activeNav", "kamar");

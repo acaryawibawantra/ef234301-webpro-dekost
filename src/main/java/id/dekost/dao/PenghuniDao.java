@@ -204,6 +204,73 @@ public class PenghuniDao {
         }
     }
 
+    public DeleteResult deleteById(int id) throws SQLException {
+        try (Connection connection = Database.getConnection()) {
+            connection.setAutoCommit(false);
+            try {
+                String status;
+                try (PreparedStatement statement = connection.prepareStatement(
+                        "SELECT status FROM penghuni WHERE id = ? FOR UPDATE")) {
+                    statement.setInt(1, id);
+                    try (ResultSet result = statement.executeQuery()) {
+                        if (!result.next()) {
+                            connection.rollback();
+                            return DeleteResult.NOT_FOUND;
+                        }
+                        status = result.getString(1);
+                    }
+                }
+
+                if ("AKTIF".equals(status)) {
+                    connection.rollback();
+                    return DeleteResult.ACTIVE;
+                }
+
+                try (PreparedStatement statement = connection.prepareStatement(
+                        "DELETE FROM penghuni WHERE id = ?")) {
+                    statement.setInt(1, id);
+                    if (statement.executeUpdate() != 1) {
+                        connection.rollback();
+                        return DeleteResult.NOT_FOUND;
+                    }
+                }
+
+                connection.commit();
+                return DeleteResult.DELETED;
+            } catch (SQLException e) {
+                try {
+                    connection.rollback();
+                } catch (SQLException rollbackError) {
+                    e.addSuppressed(rollbackError);
+                }
+                throw e;
+            }
+        }
+    }
+
+    public List<PenghuniOption> findWithoutAccount() throws SQLException {
+        String sql = """
+                SELECT p.id, p.nama_lengkap, k.nomor_kamar
+                FROM penghuni p
+                LEFT JOIN kamar k ON k.id = p.kamar_id
+                WHERE p.user_id IS NULL AND p.status = 'AKTIF'
+                ORDER BY p.nama_lengkap
+                """;
+        try (Connection connection = Database.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql);
+             ResultSet result = statement.executeQuery()) {
+            List<PenghuniOption> options = new ArrayList<>();
+            while (result.next()) {
+                options.add(new PenghuniOption(
+                        result.getInt("id"),
+                        result.getString("nama_lengkap"),
+                        result.getString("nomor_kamar")
+                ));
+            }
+            return options;
+        }
+    }
+
     public boolean setRoomStatus(Connection connection, int kamarId, String expectedStatus,
                                  String newStatus) throws SQLException {
         String sql = "UPDATE kamar SET status = ? WHERE id = ? AND status = ?";
@@ -281,5 +348,25 @@ public class PenghuniDao {
     }
 
     public record Assignment(Integer kamarId, String status, LocalDate tanggalMasuk) {
+    }
+
+    public record PenghuniOption(int id, String namaLengkap, String nomorKamar) {
+        public int getId() {
+            return id;
+        }
+
+        public String getNamaLengkap() {
+            return namaLengkap;
+        }
+
+        public String getNomorKamar() {
+            return nomorKamar;
+        }
+    }
+
+    public enum DeleteResult {
+        DELETED,
+        NOT_FOUND,
+        ACTIVE
     }
 }

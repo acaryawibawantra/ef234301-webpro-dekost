@@ -1,4 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
 <!DOCTYPE html>
 <html lang="id">
 <%@ include file="/WEB-INF/views/layout/head.jspf" %>
@@ -6,10 +8,6 @@
 <div class="landing">
     <header class="site-header">
         <a class="site-header__brand" href="${pageContext.request.contextPath}/">
-            <span class="site-header__logo">
-                <img src="${pageContext.request.contextPath}/assets/img/logo-mark.svg"
-                     alt="" width="22" height="22">
-            </span>
             <span class="site-header__name">De&rsquo; Kost</span>
         </a>
 
@@ -38,7 +36,10 @@
                 <a class="button button--accent" href="#tipe-kamar">Lihat kamar kosong</a>
             </div>
 
-            <p class="hero__occupancy">24 kamar &middot; 3 masih kosong</p>
+            <p class="hero__occupancy">
+                <c:out value="${empty totalRooms ? 0 : totalRooms}"/> kamar &middot;
+                <c:out value="${empty availableRooms ? 0 : availableRooms}"/> masih kosong
+            </p>
 
             <nav class="hero__social" aria-label="Tautan sosial De' Kost">
                 <a href="#" rel="noopener">Instagram</a>
@@ -72,26 +73,21 @@
             </article>
 
             <article class="highlight-card highlight-card--stats">
-                <p class="highlight-card__stat">24</p>
+                <p class="highlight-card__stat"><c:out value="${empty totalRooms ? 0 : totalRooms}"/></p>
                 <p class="highlight-card__stat-label">Kamar siap huni</p>
                 <p class="highlight-card__stat-note">
-                    Tiga tipe kamar untuk setiap kebutuhan dan budget.
+                    <c:out value="${empty typeAvailability ? 0 : fn:length(typeAvailability)}"/>
+                    tipe kamar untuk setiap kebutuhan dan budget.
                 </p>
 
                 <div class="highlight-card__spacer"></div>
 
-                <div class="room-row">
-                    <span class="room-row__name">Standar</span>
-                    <span class="room-row__count">12 kamar</span>
-                </div>
-                <div class="room-row">
-                    <span class="room-row__name">Deluxe</span>
-                    <span class="room-row__count">8 kamar</span>
-                </div>
-                <div class="room-row">
-                    <span class="room-row__name">Premium</span>
-                    <span class="room-row__count">4 kamar</span>
-                </div>
+                <c:forEach var="type" items="${typeAvailability}">
+                    <div class="room-row">
+                        <span class="room-row__name"><c:out value="${type.nama}"/></span>
+                        <span class="room-row__count"><c:out value="${type.totalKamar}"/> kamar</span>
+                    </div>
+                </c:forEach>
             </article>
         </section>
 
@@ -100,11 +96,11 @@
 
             <div class="numbers__row">
                 <div class="stat">
-                    <p class="stat__value">24</p>
+                    <p class="stat__value"><c:out value="${empty availableRooms ? 0 : availableRooms}"/></p>
                     <p class="stat__label">Kamar tersedia</p>
                 </div>
                 <div class="stat">
-                    <p class="stat__value">96%</p>
+                    <p class="stat__value"><c:out value="${empty occupancyPercent ? 0 : occupancyPercent}"/>%</p>
                     <p class="stat__label">Tingkat hunian</p>
                 </div>
                 <div class="stat">
@@ -112,7 +108,7 @@
                     <p class="stat__label">Akses dan keamanan</p>
                 </div>
                 <div class="stat">
-                    <p class="stat__value">Rp1,2 jt</p>
+                    <p class="stat__value"><c:out value="${empty startingPriceCompact ? 'Rp0' : startingPriceCompact}"/></p>
                     <p class="stat__label">Mulai dari per bulan</p>
                 </div>
             </div>
@@ -132,43 +128,66 @@
                 </div>
             </div>
 
-            <div class="room-grid">
-                <article class="room-card">
-                    <div class="room-card__photo room-card__photo--standar"
-                         role="img" aria-label="Kamar tipe Standar"></div>
-                    <div class="room-card__head">
-                        <h3 class="room-card__name">Standar</h3>
-                        <span class="badge badge--success">3 tersedia</span>
+            <c:choose>
+                <c:when test="${empty typeAvailability}">
+                    <div class="empty-state">
+                        <h3 class="empty-state__title">Belum ada tipe kamar</h3>
+                        <p>Tipe kamar dan ketersediaannya akan tampil di sini setelah pengelola menambahkannya.</p>
                     </div>
-                    <p class="room-card__price">Rp1.200.000 <span>/ bulan</span></p>
-                    <p class="room-card__facilities">9 m&sup2; &middot; Kipas angin &middot; Kamar mandi luar &middot; WiFi</p>
-                    <a class="button button--secondary room-card__cta" href="#kontak">Pesan kamar</a>
-                </article>
-
-                <article class="room-card">
-                    <div class="room-card__photo room-card__photo--deluxe"
-                         role="img" aria-label="Kamar tipe Deluxe"></div>
-                    <div class="room-card__head">
-                        <h3 class="room-card__name">Deluxe</h3>
-                        <span class="badge badge--success">2 tersedia</span>
+                </c:when>
+                <c:otherwise>
+                    <div class="room-grid">
+                        <c:forEach var="type" items="${typeAvailability}">
+                            <c:set var="typeName" value="${fn:toLowerCase(type.nama)}"/>
+                            <article class="room-card">
+                                <c:choose>
+                                    <c:when test="${fn:contains(typeName, 'premium')}">
+                                        <div class="room-card__photo room-card__photo--premium"
+                                             role="img" aria-label="Kamar tipe ${fn:escapeXml(type.nama)}"></div>
+                                    </c:when>
+                                    <c:when test="${fn:contains(typeName, 'deluxe')}">
+                                        <div class="room-card__photo room-card__photo--deluxe"
+                                             role="img" aria-label="Kamar tipe ${fn:escapeXml(type.nama)}"></div>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <div class="room-card__photo room-card__photo--standar"
+                                             role="img" aria-label="Kamar tipe ${fn:escapeXml(type.nama)}"></div>
+                                    </c:otherwise>
+                                </c:choose>
+                                <div class="room-card__head">
+                                    <h3 class="room-card__name"><c:out value="${type.nama}"/></h3>
+                                    <c:choose>
+                                        <c:when test="${type.kamarTersedia gt 0}">
+                                            <span class="badge badge--success">
+                                                <c:out value="${type.kamarTersedia}"/> tersedia
+                                            </span>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <span class="badge badge--neutral">Penuh</span>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </div>
+                                <p class="room-card__price">
+                                    <c:out value="${empty typeAvailabilityPrices[type.tipeKamarId] ? 'Rp0' : typeAvailabilityPrices[type.tipeKamarId]}"/>
+                                    <span>/ bulan</span>
+                                </p>
+                                <p class="room-card__facilities">
+                                    <c:out value="${type.luasM2}"/> m&sup2;
+                                    <c:if test="${not empty type.fasilitas}">
+                                        &middot; <c:out value="${type.fasilitas}"/>
+                                    </c:if>
+                                </p>
+                                <a class="button button--secondary room-card__cta" href="#kontak">
+                                    <c:choose>
+                                        <c:when test="${type.kamarTersedia gt 0}">Pesan kamar</c:when>
+                                        <c:otherwise>Hubungi pengelola</c:otherwise>
+                                    </c:choose>
+                                </a>
+                            </article>
+                        </c:forEach>
                     </div>
-                    <p class="room-card__price">Rp1.800.000 <span>/ bulan</span></p>
-                    <p class="room-card__facilities">12 m&sup2; &middot; AC &middot; Kamar mandi dalam &middot; WiFi</p>
-                    <a class="button button--secondary room-card__cta" href="#kontak">Pesan kamar</a>
-                </article>
-
-                <article class="room-card">
-                    <div class="room-card__photo room-card__photo--premium"
-                         role="img" aria-label="Kamar tipe Premium"></div>
-                    <div class="room-card__head">
-                        <h3 class="room-card__name">Premium</h3>
-                        <span class="badge badge--warning">1 tersisa</span>
-                    </div>
-                    <p class="room-card__price">Rp2.400.000 <span>/ bulan</span></p>
-                    <p class="room-card__facilities">16 m&sup2; &middot; AC &middot; Kamar mandi dalam &middot; Meja kerja</p>
-                    <a class="button button--secondary room-card__cta" href="#kontak">Pesan kamar</a>
-                </article>
-            </div>
+                </c:otherwise>
+            </c:choose>
         </section>
 
         <section class="closing" id="kontak" aria-labelledby="closing-title">

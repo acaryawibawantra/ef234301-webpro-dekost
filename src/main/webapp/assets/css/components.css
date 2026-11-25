@@ -640,21 +640,6 @@
   padding: 0 0 var(--space-24) var(--space-8);
 }
 
-.sidebar__logo {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  border-radius: var(--radius-sm);
-  background-color: var(--accent);
-}
-
-.sidebar__logo img {
-  width: 22px;
-  height: 22px;
-}
-
 .sidebar__brand-text {
   display: flex;
   flex-direction: column;

@@ -175,6 +175,25 @@
                                                         <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4Z"/>
                                                     </svg>
                                                 </a>
+                                                <c:if test="${item.status ne 'AKTIF'}">
+                                                    <button class="table__action"
+                                                            type="button"
+                                                            aria-label="Hapus penghuni ${fn:escapeXml(item.namaLengkap)}"
+                                                            title="Hapus"
+                                                            data-confirm-open="confirm-delete-modal"
+                                                            data-delete-url="${ctx}/admin/penghuni/delete"
+                                                            data-delete-id="${item.id}"
+                                                            data-delete-title="Hapus data penghuni"
+                                                            data-delete-message="Hapus data ${fn:escapeXml(item.namaLengkap)}? Riwayat tagihan dan keluhan penghuni ini ikut terhapus.">
+                                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                                                             stroke="currentColor" stroke-width="1.75"
+                                                             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                                            <path d="M3 6h18"/>
+                                                            <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
+                                                            <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
+                                                        </svg>
+                                                    </button>
+                                                </c:if>
                                             </div>
                                         </td>
                                     </tr>

@@ -15,10 +15,6 @@
     <section class="login__panel">
         <div class="login__form-wrap">
             <a class="login__brand" href="${pageContext.request.contextPath}/">
-                <span class="login__logo">
-                    <img src="${pageContext.request.contextPath}/assets/img/logo-mark.svg"
-                         alt="" width="22" height="22">
-                </span>
                 <span class="login__brand-name">De&rsquo; Kost</span>
             </a>
 

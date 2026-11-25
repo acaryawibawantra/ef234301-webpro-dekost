@@ -90,6 +90,8 @@ public class PenghuniServlet extends HttpServlet {
                 updateAndMove(request, response);
             } else if ("/checkout".equals(pathInfo)) {
                 checkOut(request, response);
+            } else if ("/delete".equals(pathInfo)) {
+                delete(request, response);
             } else {
                 response.sendError(HttpServletResponse.SC_NOT_FOUND);
             }
@@ -209,6 +211,25 @@ public class PenghuniServlet extends HttpServlet {
             case NO_ACTIVE_ROOM -> Flash.error(request, "Penghuni tidak memiliki kamar aktif.");
             case ASSIGNMENT_CHANGED -> Flash.error(
                     request, "Penempatan penghuni berubah bersamaan. Muat ulang halaman lalu coba lagi.");
+        }
+        redirectToList(request, response);
+    }
+
+    private void delete(HttpServletRequest request, HttpServletResponse response)
+            throws SQLException, IOException {
+        Integer id = parsePositiveInteger(request.getParameter("id"));
+        if (id == null) {
+            Flash.error(request, "ID penghuni tidak valid.");
+            redirectToList(request, response);
+            return;
+        }
+
+        PenghuniDao.DeleteResult result = penghuniDao.deleteById(id);
+        switch (result) {
+            case DELETED -> Flash.success(request, "Data penghuni berhasil dihapus.");
+            case ACTIVE -> Flash.error(request,
+                    "Penghuni aktif tidak dapat dihapus. Lakukan check-out terlebih dahulu.");
+            case NOT_FOUND -> Flash.error(request, "Penghuni tidak ditemukan.");
         }
         redirectToList(request, response);
     }

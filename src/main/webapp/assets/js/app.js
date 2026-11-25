@@ -378,6 +378,23 @@
             scheduleToast(existingToasts[i]);
         }
         updateBodyScrollLock(root);
+        openModalFromHash(root);
+    }
+
+    function openModalFromHash(root) {
+        var location = root.location;
+        if (!location || !location.hash || location.hash.length < 2) {
+            return;
+        }
+        var modalId = location.hash.slice(1);
+        var modal = resolveModal(root, modalId);
+        if (!modal || !modal.classList || !modal.classList.contains("modal")) {
+            return;
+        }
+        openModal(modal, null, root);
+        if (global.history && global.history.replaceState) {
+            global.history.replaceState(null, "", location.pathname + location.search);
+        }
     }
 
     global.DeKostUI = {

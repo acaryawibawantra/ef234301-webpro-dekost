@@ -1,5 +1,6 @@
 package id.dekost.servlet;
 
+import id.dekost.dao.KamarDao;
 import id.dekost.dao.PortalDao;
 import id.dekost.model.Keluhan;
 import id.dekost.model.Pembayaran;
@@ -40,6 +41,7 @@ public class PenghuniDashboardServlet extends HttpServlet {
             DateTimeFormatter.ofPattern("MMMM uuuu", ID_LOCALE);
 
     private final PortalDao portalDao = new PortalDao();
+    private final KamarDao kamarDao = new KamarDao();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -64,6 +66,7 @@ public class PenghuniDashboardServlet extends HttpServlet {
             PortalDao.ResidentSummary summary = portalDao.loadSummary(penghuniId);
             List<Pembayaran> payments = portalDao.findPayments(penghuniId);
             List<Keluhan> complaints = portalDao.findComplaints(penghuniId);
+            List<KamarDao.TypeAvailability> roomTypeAvailability = kamarDao.findAvailabilityByType();
 
             Map<Integer, String> paymentPeriods = new LinkedHashMap<>();
             Map<Integer, String> paymentAmounts = new LinkedHashMap<>();
@@ -75,6 +78,16 @@ public class PenghuniDashboardServlet extends HttpServlet {
                 paymentPeriods.put(payment.getId(), formatPeriod(payment.getPeriode()));
                 paymentAmounts.put(payment.getId(), formatRupiah(payment.getJumlah()));
                 paymentDueDates.put(payment.getId(), formatDate(payment.getJatuhTempo()));
+            }
+
+            Map<Integer, String> roomTypePrices = new LinkedHashMap<>();
+            long availableRoomCount = 0;
+            for (KamarDao.TypeAvailability type : roomTypeAvailability) {
+                availableRoomCount += type.getKamarTersedia();
+                roomTypePrices.put(type.getTipeKamarId(),
+                        RupiahFormatter.format(type.getHargaBulanan() == null
+                                ? BigDecimal.ZERO
+                                : type.getHargaBulanan()));
             }
 
             Map<Integer, String> complaintDates = new LinkedHashMap<>();
@@ -98,6 +111,9 @@ public class PenghuniDashboardServlet extends HttpServlet {
             request.setAttribute("paymentAmounts", paymentAmounts);
             request.setAttribute("paymentDueDates", paymentDueDates);
             request.setAttribute("complaintDates", complaintDates);
+            request.setAttribute("roomTypeAvailability", roomTypeAvailability);
+            request.setAttribute("roomTypePrices", roomTypePrices);
+            request.setAttribute("availableRoomCount", availableRoomCount);
             request.setAttribute("belumBayarTotalFormatted", formatRupiah(summary.getBelumBayarTotal()));
             request.setAttribute("hargaBulananFormatted", formatRupiah(profile.getHargaBulanan()));
             request.setAttribute("tanggalMasukFormatted", formatDate(profile.getTanggalMasuk()));

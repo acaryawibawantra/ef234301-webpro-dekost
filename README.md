@@ -69,11 +69,27 @@ src/main/webapp/
   WEB-INF/views/layout/   head.jspf, sidebar.jspf, topbar.jspf, footer.jspf
   WEB-INF/views/public/   landing.jsp, login.jsp
   WEB-INF/views/admin/    dashboard, kamar, tipe-kamar, penghuni, pembayaran, keluhan
-  assets/css/             tokens.css, base.css, components.css, pages.css
+  assets/css/             tokens.css, base.css, components.css, pages.css, theme.css
   assets/js/              app.js
   assets/img/             hero, footer, lorong, foto kamar, logo
 db/       schema.sql (DDL), seed.sql (data contoh)
 ```
+
+## Fitur CRUD
+
+| # | Fitur | Create | Read | Update | Delete |
+|---|-------|--------|------|--------|--------|
+| 1 | Tipe kamar | Ya | Ya | Ya | Ya |
+| 2 | Kamar | Ya | Ya | Ya | Ya |
+| 3 | Penghuni | Check-in | Daftar/detail | Ubah data & pindah kamar | Hapus (setelah check-out) |
+| 4 | Pembayaran | Tagihan baru + generate bulanan | Daftar tagihan | Ubah tagihan + tandai lunas | Ya |
+| 5 | Keluhan (admin) | Ya | Ya | Ya | Ya |
+| 6 | Akun pengguna | Ya | Ya | Nama, email, role, password | Ya |
+| 7 | Portal penghuni: keluhan | Ya | Ya | - | - |
+| 8 | Portal penghuni: tagihan | - | Ya | Unggah bukti pembayaran | - |
+
+Dashboard admin dan dashboard penghuni memakai data ketersediaan kamar yang sama
+(`KamarDao.findAvailabilityByType`), begitu juga landing page publik.
 
 ## Pembagian kerja FE / BE
 

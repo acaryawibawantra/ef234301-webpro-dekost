@@ -3,9 +3,6 @@
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
 <aside class="sidebar" aria-label="Navigasi area penghuni">
     <a class="sidebar__brand" href="${ctx}/penghuni/dashboard">
-        <span class="sidebar__logo">
-            <img src="${ctx}/assets/img/logo-mark.svg" alt="" width="22" height="22">
-        </span>
         <span class="sidebar__brand-text">
             <span class="sidebar__brand-name">De&rsquo; Kost</span>
             <span class="sidebar__brand-sub">Area penghuni</span>

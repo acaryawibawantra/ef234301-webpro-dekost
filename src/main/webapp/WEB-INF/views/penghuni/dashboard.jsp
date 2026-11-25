@@ -174,6 +174,51 @@
 
                             <section class="card card--outline card--compact">
                                 <header class="panel-head">
+                                    <h2 class="panel-head__title">Ketersediaan kamar</h2>
+                                    <span class="badge ${availableRoomCount gt 0 ? 'badge--success' : 'badge--neutral'}">
+                                        <span class="badge__dot"></span><c:out value="${empty availableRoomCount ? 0 : availableRoomCount}"/> tersedia
+                                    </span>
+                                </header>
+
+                                <c:choose>
+                                    <c:when test="${empty roomTypeAvailability}">
+                                        <div class="empty-state">
+                                            <h3 class="empty-state__title">Belum ada data kamar</h3>
+                                            <p>Ketersediaan kamar akan tampil di sini setelah pengelola menambahkan kamar.</p>
+                                        </div>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <div class="occupancy-list">
+                                            <c:forEach var="type" items="${roomTypeAvailability}">
+                                                <div class="occupancy-item">
+                                                    <div class="occupancy-item__meta">
+                                                        <span class="occupancy-item__label">
+                                                            <c:out value="${type.nama}"/>
+                                                            &middot;
+                                                            <c:out value="${empty roomTypePrices[type.tipeKamarId] ? 'Rp0' : roomTypePrices[type.tipeKamarId]}"/>
+                                                        </span>
+                                                        <span class="occupancy-item__count">
+                                                            <c:out value="${type.kamarTersedia}"/> / <c:out value="${type.totalKamar}"/> tersedia
+                                                        </span>
+                                                    </div>
+                                                    <progress class="occupancy-progress"
+                                                              value="${type.kamarTersedia}"
+                                                              max="${type.totalKamar gt 0 ? type.totalKamar : 1}"
+                                                              aria-label="Ketersediaan ${fn:escapeXml(type.nama)}"></progress>
+                                                </div>
+                                            </c:forEach>
+                                        </div>
+
+                                        <p class="field__hint">
+                                            Butuh kamar lain? Ajukan perpindahan melalui
+                                            <a href="${ctx}/penghuni/keluhan">menu keluhan</a>.
+                                        </p>
+                                    </c:otherwise>
+                                </c:choose>
+                            </section>
+
+                            <section class="card card--outline card--compact">
+                                <header class="panel-head">
                                     <h2 class="panel-head__title">Keluhan terbaru</h2>
                                     <a class="panel-head__link" href="${ctx}/penghuni/keluhan">Lihat semua</a>
                                 </header>

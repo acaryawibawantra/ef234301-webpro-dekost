@@ -563,6 +563,32 @@ test("form[data-confirm] intercepts submit, submits on confirm, and clears pendi
     assert.equal(targetForm.submitted, true);
 });
 
+test("URL hash opens the matching modal on load and clears the hash afterwards", () => {
+    const env = createDomEnvironment();
+    env.document.location = { hash: "#kamar-create-modal", pathname: "/admin/kamar", search: "?status=TERSEDIA" };
+    let replacedUrl = null;
+    env.window.history = {
+        replaceState(_state, _title, url) {
+            replacedUrl = url;
+        }
+    };
+
+    const modal = env.el("div", { id: "kamar-create-modal", class: "modal" }, [
+        env.el("div", { class: "modal__dialog" }, [env.el("input", { type: "text", name: "nomorKamar" })])
+    ]);
+    const unrelated = env.el("div", { id: "other-modal", class: "modal" }, [
+        env.el("div", { class: "modal__dialog" })
+    ]);
+    env.document.body.appendChild(modal);
+    env.document.body.appendChild(unrelated);
+
+    loadApp(env);
+
+    assert.equal(modal.classList.contains("is-open"), true);
+    assert.equal(unrelated.classList.contains("is-open"), false);
+    assert.equal(replacedUrl, "/admin/kamar?status=TERSEDIA");
+});
+
 test("toast auto-dismisses server & dynamic toasts, cancels timer on click, creates stack when missing, and respects timeout=0", async () => {
     const env = createDomEnvironment();
     const ui = loadApp(env);

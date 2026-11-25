@@ -3,9 +3,6 @@
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
 <aside class="sidebar" aria-label="Navigasi panel pengelola">
     <a class="sidebar__brand" href="${ctx}/admin/dashboard">
-        <span class="sidebar__logo">
-            <img src="${ctx}/assets/img/logo-mark.svg" alt="" width="22" height="22">
-        </span>
         <span class="sidebar__brand-text">
             <span class="sidebar__brand-name">De&rsquo; Kost</span>
             <span class="sidebar__brand-sub">Panel pengelola</span>
@@ -43,6 +40,11 @@
         <a class="sidebar__link ${activeNav eq 'keluhan' ? 'is-active' : ''}"
            href="${ctx}/admin/keluhan">
             <span>Keluhan</span>
+        </a>
+
+        <a class="sidebar__link ${activeNav eq 'akun' ? 'is-active' : ''}"
+           href="${ctx}/admin/akun">
+            <span>Akun</span>
         </a>
     </nav>
 
