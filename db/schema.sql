@@ -1,5 +1,4 @@
-DROP TABLE IF EXISTS keluhan, pembayaran, penghuni, kamar, tipe_kamar, users CASCADE;
-CREATE TABLE users (
+CREATE TABLE IF NOT EXISTS users (
     id            SERIAL PRIMARY KEY,
     nama          VARCHAR(100) NOT NULL,
     email         VARCHAR(120) NOT NULL UNIQUE,
@@ -8,14 +7,14 @@ CREATE TABLE users (
                   CHECK (role IN ('ADMIN', 'PENGHUNI')),
     created_at    TIMESTAMP    NOT NULL DEFAULT NOW()
 );
-CREATE TABLE tipe_kamar (
+CREATE TABLE IF NOT EXISTS tipe_kamar (
     id            SERIAL PRIMARY KEY,
     nama          VARCHAR(50)   NOT NULL UNIQUE,
     harga_bulanan NUMERIC(12,2) NOT NULL CHECK (harga_bulanan >= 0),
     luas_m2       INT           NOT NULL CHECK (luas_m2 > 0),
     fasilitas     TEXT
 );
-CREATE TABLE kamar (
+CREATE TABLE IF NOT EXISTS kamar (
     id            SERIAL PRIMARY KEY,
     nomor_kamar   VARCHAR(10) NOT NULL UNIQUE,
     lantai        INT         NOT NULL CHECK (lantai > 0),
@@ -24,7 +23,7 @@ CREATE TABLE kamar (
                   CHECK (status IN ('TERSEDIA', 'TERISI', 'PERBAIKAN')),
     catatan       TEXT
 );
-CREATE TABLE penghuni (
+CREATE TABLE IF NOT EXISTS penghuni (
     id                 SERIAL PRIMARY KEY,
     user_id            INT UNIQUE REFERENCES users(id) ON DELETE SET NULL,
     kamar_id           INT UNIQUE REFERENCES kamar(id) ON DELETE SET NULL,
@@ -38,7 +37,7 @@ CREATE TABLE penghuni (
                        CHECK (status IN ('AKTIF', 'NONAKTIF')),
     CHECK (tanggal_keluar IS NULL OR tanggal_keluar >= tanggal_masuk)
 );
-CREATE TABLE pembayaran (
+CREATE TABLE IF NOT EXISTS pembayaran (
     id            SERIAL PRIMARY KEY,
     penghuni_id   INT           NOT NULL REFERENCES penghuni(id) ON DELETE CASCADE,
     periode       DATE          NOT NULL,
@@ -51,7 +50,7 @@ CREATE TABLE pembayaran (
     bukti_url     VARCHAR(255),
     UNIQUE (penghuni_id, periode)
 );
-CREATE TABLE keluhan (
+CREATE TABLE IF NOT EXISTS keluhan (
     id             SERIAL PRIMARY KEY,
     penghuni_id    INT          NOT NULL REFERENCES penghuni(id) ON DELETE CASCADE,
     ditangani_oleh INT          REFERENCES users(id) ON DELETE SET NULL,
@@ -67,6 +66,6 @@ CREATE TABLE keluhan (
     created_at     TIMESTAMP    NOT NULL DEFAULT NOW(),
     resolved_at    TIMESTAMP
 );
-CREATE INDEX idx_kamar_status       ON kamar(status);
-CREATE INDEX idx_pembayaran_status  ON pembayaran(status, jatuh_tempo);
-CREATE INDEX idx_keluhan_status     ON keluhan(status);
+CREATE INDEX IF NOT EXISTS idx_kamar_status       ON kamar(status);
+CREATE INDEX IF NOT EXISTS idx_pembayaran_status  ON pembayaran(status, jatuh_tempo);
+CREATE INDEX IF NOT EXISTS idx_keluhan_status     ON keluhan(status);

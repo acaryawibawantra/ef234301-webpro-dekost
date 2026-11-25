@@ -16,7 +16,11 @@ konektivitas database.
 
 ## Menjalankan lokal dengan Docker
 
+Salin `.env.example` menjadi `.env`, lalu isi `ADMIN_PASSWORD` dengan password
+kuat (8-72 karakter dan maksimal 72 byte UTF-8):
+
 ```bash
+cp .env.example .env
 docker compose up --build
 ```
 
@@ -24,32 +28,55 @@ docker compose up --build
 - Health check: <http://localhost:8080/health> → `OK` + status database
 - PostgreSQL: `localhost:5432`, database/user `dekost` (kredensial development lokal)
 
-Saat pertama kali dibuat, container Postgres menjalankan `db/schema.sql`.
-`db/seed.sql` **tidak** dijalankan otomatis; file tersebut sudah berisi hash BCrypt
-admin dan data contoh, lalu jalankan:
-
-```bash
-docker compose exec -T postgres psql -U dekost -d dekost < db/seed.sql
-```
+Saat aplikasi pertama kali terhubung, aplikasi membuat schema, akun admin
+berdasarkan `ADMIN_EMAIL`/`ADMIN_PASSWORD`, dan data contoh dari `db/seed.sql`
+jika database masih kosong. Password admin disimpan sebagai hash BCrypt. Schema
+aman dijalankan ulang dan redeploy tidak menghapus data atau mereset password.
 
 Hentikan dengan `docker compose down` (tambahkan `-v` untuk menghapus volume database).
 
 ## Menjalankan tanpa Docker
 
-1. Buat database dan jalankan skema:
+1. Buat database:
    ```bash
    createdb dekost
-   psql -d dekost -f db/schema.sql
    ```
 2. Set environment variable (contoh ada di `.env.example`):
-   `DB_URL`, `DB_USER`, `DB_PASSWORD`, `WA_NUMBER`.
-   Default lokal: `jdbc:postgresql://localhost:5432/dekost`, user/password `dekost`.
+   `DB_URL`, `DB_USER`, `DB_PASSWORD`, `ADMIN_EMAIL`, `ADMIN_PASSWORD`, dan
+   `WA_NUMBER`. Schema dan data contoh akan dibuat saat aplikasi pertama kali
+   terhubung ke database kosong. Default jika variabel DB tidak diatur:
+   `jdbc:postgresql://localhost:5432/dekost`, user/password `dekost`; sesuaikan
+   placeholder di `.env.example` jika kredensial database berbeda.
 3. Build:
    ```bash
    mvn clean package
    ```
 4. Salin `target/ROOT.war` ke `webapps/` Tomcat 10.1, lalu jalankan Tomcat.
 5. Buka <http://localhost:8080/health>.
+
+## Deploy di Railway
+
+Deploy repo sebagai Docker service, tambahkan PostgreSQL service, lalu atur
+variabel di service aplikasi. Ganti `Postgres` dengan nama service database di
+project Railway:
+
+```text
+DB_URL=${{Postgres.DATABASE_URL}}
+DB_USER=${{Postgres.PGUSER}}
+DB_PASSWORD=${{Postgres.PGPASSWORD}}
+ADMIN_EMAIL=admin@kos.test
+ADMIN_PASSWORD=<password kuat 8-72 karakter>
+```
+
+Railway menyediakan `PORT`; entrypoint Docker mengatur port HTTP Tomcat dari
+variabel tersebut (default lokal `8080`). Atur health check Railway ke
+`/health`. Saat startup pertama, schema dan data contoh dibuat otomatis jika
+database kosong. Pada database yang sudah berisi data, schema dijalankan tanpa
+perintah `DROP`, akun admin dibuat hanya jika belum ada, dan seed contoh tidak
+dijalankan ulang. Pastikan variabel admin tersedia saat bootstrap database
+kosong. Untuk perubahan struktur pada database yang sudah ada, tambahkan
+migrasi SQL `ALTER TABLE` yang eksplisit; `CREATE TABLE IF NOT EXISTS` bukan
+migrasi perubahan kolom.
 
 ## Struktur folder
 
