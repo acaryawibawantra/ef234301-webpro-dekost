@@ -1,17 +1,3 @@
-\getenv admin_email ADMIN_EMAIL
-\getenv admin_password ADMIN_PASSWORD
-
-SELECT length(:'admin_password') BETWEEN 8 AND 72
-   AND octet_length(:'admin_password') <= 72 AS admin_password_valid
-\gset
-\if :admin_password_valid
-\else
-\echo 'ADMIN_PASSWORD must be 8-72 characters and at most 72 UTF-8 bytes.'
-\quit 1
-\endif
-
-CREATE EXTENSION IF NOT EXISTS pgcrypto;
-
 INSERT INTO users (nama, email, password_hash, role) VALUES
  ('Budi Santoso', 'budi@kos.test', '$2a$12$rFtazLwGLwMGr2JpJ9Ki4.wa96E7DOAPzJqJBe/YgdZZcpWsk7bDS', 'PENGHUNI')
 ON CONFLICT (email) DO NOTHING;
