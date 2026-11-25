@@ -1,69 +1,90 @@
 # De' Kost
 
-Aplikasi manajemen kos (JSP + Servlet + PostgreSQL) untuk tugas EF234301 Web Programming.
-Landing page publik dan halaman login sudah tersedia. Fondasi backend menyediakan pool
-koneksi PostgreSQL, filter UTF-8, model JavaBean untuk entitas utama, serta utilitas flash
-message, validasi, pagination, dan format Rupiah/tanggal. Halaman `/health` memeriksa
-konektivitas database.
+Aplikasi manajemen kos berbasis **JSP + Servlet + PostgreSQL** untuk Quiz 2 Web Programming.
+Terdapat dua area: **panel pengelola (admin)** dan **portal penghuni**, dengan autentikasi
+dan pembatasan akses berdasarkan role.
 
-## Prasyarat
+- **Website:** <https://ef234301-webpro-dekost-production.up.railway.app/>
+- **Repository:** <https://github.com/acaryawibawantra/ef234301-webpro-dekost.git>
+- **Laporan:** <https://docs.google.com/document/d/1UODh9L5-0Wbx6RTMFke0-THfMk2axb8G_VXs9zLvBQg/edit>
+- **Desain Figma:** <https://www.figma.com/design/AU54oSb33HxrVZQXYZlqYX>
+- **Desain Database:** <https://app.eraser.io/workspace/Rx65wqGoGNBuqyXTkt7d?origin=share>
 
-- JDK 17
-- Maven 3.9+
-- Docker + Docker Compose (untuk cara termudah)
-- PostgreSQL 16 (jika menjalankan tanpa Docker)
-- Tomcat 10.1 (Jakarta EE 10, namespace `jakarta.*`)
+## Akun Demo (untuk Asdos)
 
-## Menjalankan lokal dengan Docker
+| Role | Email | Password |
+|------|-------|----------|
+| Admin / Pengelola | `admin@dekost.com` | `admin1234` |
+| Penghuni | `penghuni@gmail.com` | `penghuni1234` |
 
-Salin `.env.example` menjadi `.env`, lalu isi `ADMIN_PASSWORD` dengan password
-kuat (8-72 karakter dan maksimal 72 byte UTF-8):
+Akun admin dibuat otomatis dari `ADMIN_EMAIL` dan `ADMIN_PASSWORD` saat database masih kosong.
+Nilai default untuk demo sudah disiapkan di `.env.example`. Akun penghuni dibuat oleh
+`db/seed.sql`. Setelah login, admin diarahkan ke dashboard admin dan penghuni ke portal penghuni.
+
+## Fitur
+
+| Fitur | Deskripsi |
+|-------|-----------|
+| Authentication | Login, logout, dan role-based access control (ADMIN / PENGHUNI). |
+| Room Management | CRUD kamar: nomor, lantai, tipe, status (Tersedia/Terisi/Perbaikan), catatan. |
+| Room Type Management | CRUD tipe kamar: harga bulanan, luas, fasilitas. |
+| Tenant Management | CRUD penghuni, check-in, pindah kamar, check-out, dan hapus data penghuni nonaktif. |
+| Payment Management | CRUD tagihan, pembuatan tagihan bulanan massal, dan konfirmasi pembayaran lunas. |
+| Complaint Management | CRUD keluhan dari sisi admin, termasuk tanggapan, prioritas, dan status. |
+| Account Management | CRUD akun admin/penghuni, reset password, dan tautkan akun ke data penghuni. |
+| Tenant Payment | Penghuni melihat tagihan dan mengirim bukti pembayaran. |
+| Tenant Complaint | Penghuni membuat dan memantau keluhan. |
+| Admin Dashboard | Ringkasan okupansi, pendapatan bulan ini, tunggakan, keluhan terbuka, dan ketersediaan kamar per tipe. |
+
+### Cakupan CRUD (minimal 8 fitur)
+
+1. Tipe kamar — Create, Read, Update, Delete
+2. Kamar — Create, Read, Update, Delete
+3. Penghuni — Create, Read, Update, Delete (hapus setelah check-out)
+4. Pembayaran — Create, Read, Update, Delete
+5. Keluhan admin — Create, Read, Update, Delete
+6. Akun pengguna — Create, Read, Update, Delete
+7. Portal penghuni: keluhan — Create, Read
+8. Portal penghuni: tagihan — Read, Update bukti pembayaran
+
+## Aturan Bisnis Utama
+
+- Kamar hanya dapat ditempati jika berstatus **TERSEDIA**; satu kamar hanya untuk satu penghuni aktif.
+- Status kamar **TERISI** dikelola otomatis oleh proses check-in/check-out, bukan diedit manual.
+- Tagihan unik per penghuni dan periode. Status **TERLAMBAT** ditentukan otomatis dari tanggal jatuh tempo.
+- Status keluhan mengikuti alur **BARU → DIPROSES → SELESAI**.
+- Operasi CRUD data master hanya dapat dilakukan oleh **ADMIN**.
+
+## Teknologi
+
+- Jakarta Server Pages (JSP) + Servlet (Jakarta EE 10)
+- PostgreSQL 16
+- HikariCP, BCrypt, Maven
+- Tomcat 10.1
+- Docker & Docker Compose
+
+## Menjalankan dengan Docker
+
+Salin konfigurasi demo, lalu jalankan:
 
 ```bash
 cp .env.example .env
 docker compose up --build
 ```
 
-- Aplikasi: <http://localhost:8080> (WAR dipasang sebagai `ROOT`)
-- Health check: <http://localhost:8080/health> → `OK` + status database
-- Database/user default `dekost`, hanya tersedia di jaringan internal Compose.
-  Untuk mengakses PostgreSQL lokal:
-  `docker compose exec postgres psql -U dekost -d dekost`.
+- Aplikasi: <http://localhost:8080>
+- Health check: <http://localhost:8080/health>
 
-Saat aplikasi pertama kali terhubung, aplikasi membuat schema, akun admin
-berdasarkan `ADMIN_EMAIL`/`ADMIN_PASSWORD`, dan data contoh dari `db/seed.sql`
-jika database masih kosong. Password admin disimpan sebagai hash BCrypt. Schema
-aman dijalankan ulang dan redeploy tidak menghapus data atau mereset password.
+Saat database masih kosong, aplikasi otomatis membuat schema, akun admin dari
+`ADMIN_EMAIL`/`ADMIN_PASSWORD`, dan data contoh dari `db/seed.sql`.
+Schema aman dijalankan ulang, jadi redeploy tidak menghapus data.
 
-Hentikan tanpa menghapus data dengan `docker compose down`.
+Reset database (menghapus semua data):
 
-### Deploy di DomCloud
-
-Pada Setup → Deploy, aktifkan Docker dan gunakan konfigurasi deployment:
-
-```yaml
-features:
-  - docker
-services: docker-compose.yml
+```bash
+docker compose down -v
+docker compose up --build
 ```
-
-Docker di DomCloud memerlukan plan Kit/Pro. Buat `.env` secara aman di root
-aplikasi pada host (jangan commit), lalu isi variabel dari `.env.example`;
-khususnya set password acak kuat untuk `POSTGRES_PASSWORD` dan `ADMIN_PASSWORD`.
-Pastikan `.env` tersedia saat deployment menjalankan Compose.
-
-Service `app` menerima trafik publik melalui port container `8080`; frontend JSP
-dan backend Servlet disajikan oleh service yang sama. Service `postgres` hanya
-diakses lewat jaringan internal Compose dan tidak mempublikasikan port database.
-Ini juga menghindari binding host IP yang tidak didukung Docker rootless DomCloud.
-`DB_URL` di dalam container harus memakai hostname service database, misalnya
-`jdbc:postgresql://postgres:5432/dekost`, bukan `localhost`.
-
-Gunakan volume persisten untuk `/var/lib/postgresql/data` pada service `postgres`.
-`db/schema.sql` dan `db/seed.sql` hanya diinisialisasi pada volume kosong; jangan
-menghapus volume production saat redeploy. Endpoint `/health` mengembalikan status
-503 bila database tidak dapat diakses. Lihat [panduan Docker DomCloud](https://domcloud.co/docs/deployment/docker)
-untuk detail routing port dan Compose.
 
 ## Menjalankan tanpa Docker
 
@@ -71,91 +92,67 @@ untuk detail routing port dan Compose.
    ```bash
    createdb dekost
    ```
-2. Set environment variable (contoh ada di `.env.example`):
-   `DB_URL`, `DB_USER`, `DB_PASSWORD`, `ADMIN_EMAIL`, `ADMIN_PASSWORD`, dan
-   `WA_NUMBER`. Schema dan data contoh akan dibuat saat aplikasi pertama kali
-   terhubung ke database kosong. Default jika variabel DB tidak diatur:
-   `jdbc:postgresql://localhost:5432/dekost`, user/password `dekost`; sesuaikan
-   placeholder di `.env.example` jika kredensial database berbeda.
+2. Set environment variable: `DB_URL`, `DB_USER`, `DB_PASSWORD`, `ADMIN_EMAIL`,
+   `ADMIN_PASSWORD`, dan `WA_NUMBER` (contoh di `.env.example`). Schema dan data
+   contoh dibuat otomatis saat aplikasi pertama kali terhubung.
 3. Build:
    ```bash
    mvn clean package
    ```
-4. Salin `target/ROOT.war` ke `webapps/` Tomcat 10.1, lalu jalankan Tomcat.
-5. Buka <http://localhost:8080/health>.
+4. Deploy `target/ROOT.war` ke Tomcat 10.1, lalu buka <http://localhost:8080>.
 
-## Deploy di Railway
+## Deploy
 
-Deploy repo sebagai Docker service, tambahkan PostgreSQL service, lalu atur
-variabel di service aplikasi. Ganti `Postgres` dengan nama service database di
-project Railway:
+**Railway:** deploy repo sebagai Docker service, tambahkan PostgreSQL, lalu isi
+environment service aplikasi:
 
 ```text
-DB_URL=${{Postgres.DATABASE_URL}}
-DB_USER=${{Postgres.PGUSER}}
-DB_PASSWORD=${{Postgres.PGPASSWORD}}
-ADMIN_EMAIL=admin@kos.test
-ADMIN_PASSWORD=<password kuat 8-72 karakter>
+DB_URL=jdbc:postgresql://<host>:<port>/<database>
+DB_USER=<user>
+DB_PASSWORD=<password>
+ADMIN_EMAIL=admin@dekost.com
+ADMIN_PASSWORD=admin1234
 ```
 
-Railway menyediakan `PORT`; entrypoint Docker mengatur port HTTP Tomcat dari
-variabel tersebut (default lokal `8080`). Atur health check Railway ke
-`/health`. Saat startup pertama, schema dan data contoh dibuat otomatis jika
-database kosong. Pada database yang sudah berisi data, schema dijalankan tanpa
-perintah `DROP`, akun admin dibuat hanya jika belum ada, dan seed contoh tidak
-dijalankan ulang. Pastikan variabel admin tersedia saat bootstrap database
-kosong. Untuk perubahan struktur pada database yang sudah ada, tambahkan
-migrasi SQL `ALTER TABLE` yang eksplisit; `CREATE TABLE IF NOT EXISTS` bukan
-migrasi perubahan kolom.
+**DomCloud:** aktifkan fitur Docker dan gunakan `docker-compose.yml` sebagai
+konfigurasi service. Siapkan `.env` di server (jangan di-commit) dengan nilai
+yang sama seperti di atas.
 
-## Struktur folder
+Gunakan password yang lebih kuat untuk deployment produksi.
 
-```
+## Struktur Singkat
+
+```text
 src/main/java/id/dekost/
-  config/     Database.java (HikariCP, env var)
-  model/      User, TipeKamar, Kamar, Penghuni, Pembayaran, Keluhan
-  dao/        akses database (UserDao, KamarDao, PenghuniDao, PembayaranDao,
-              KeluhanDao, DashboardDao, dan DAO entitas lain)
-  service/    logika bisnis/transaksi (AuthService, PenghuniService, PembayaranService, dan service lain)
-  servlet/    LandingServlet, AuthServlet, KamarServlet, PenghuniServlet,
-              PembayaranServlet, KeluhanServlet, TipeKamarServlet, HealthServlet
-  filter/     EncodingFilter, AuthFilter, CsrfFilter
-  util/       Flash, Validator, Pagination, RupiahFormatter, TanggalFormatter
+  config/    koneksi database, inisialisasi schema/seed
+  model/     User, TipeKamar, Kamar, Penghuni, Pembayaran, Keluhan
+  dao/       akses database
+  service/   logika bisnis dan transaksi
+  servlet/   controller admin, penghuni, auth, dan landing
+  filter/    autentikasi, otorisasi role, CSRF, encoding
+  util/      flash message, validasi, pagination, format Rupiah/tanggal
+
 src/main/webapp/
-  WEB-INF/web.xml
-  WEB-INF/views/layout/   head.jspf, sidebar.jspf, topbar.jspf, footer.jspf
-  WEB-INF/views/public/   landing.jsp, login.jsp
-  WEB-INF/views/admin/    dashboard, kamar, tipe-kamar, penghuni, pembayaran, keluhan
-  assets/css/             tokens.css, base.css, components.css, pages.css, theme.css
-  assets/js/              app.js
-  assets/img/             hero, footer, lorong, foto kamar, logo
-db/       schema.sql (DDL), seed.sql (data contoh)
+  WEB-INF/views/   JSP admin, penghuni, publik, dan layout
+  assets/          CSS, JavaScript, gambar
+
+db/
+  schema.sql   DDL
+  seed.sql     data contoh + akun penghuni
 ```
 
-## Fitur CRUD
+## Keamanan
 
-| #   | Fitur                    | Create                          | Read           | Update                      | Delete                    |
-| --- | ------------------------ | ------------------------------- | -------------- | --------------------------- | ------------------------- |
-| 1   | Tipe kamar               | Ya                              | Ya             | Ya                          | Ya                        |
-| 2   | Kamar                    | Ya                              | Ya             | Ya                          | Ya                        |
-| 3   | Penghuni                 | Check-in                        | Daftar/detail  | Ubah data & pindah kamar    | Hapus (setelah check-out) |
-| 4   | Pembayaran               | Tagihan baru + generate bulanan | Daftar tagihan | Ubah tagihan + tandai lunas | Ya                        |
-| 5   | Keluhan (admin)          | Ya                              | Ya             | Ya                          | Ya                        |
-| 6   | Akun pengguna            | Ya                              | Ya             | Nama, email, role, password | Ya                        |
-| 7   | Portal penghuni: keluhan | Ya                              | Ya             | -                           | -                         |
-| 8   | Portal penghuni: tagihan | -                               | Ya             | Unggah bukti pembayaran     | -                         |
+- Password disimpan sebagai hash **BCrypt**.
+- Query memakai **PreparedStatement** dan koneksi HikariCP.
+- Form POST dilindungi **CSRF token**.
+- Akses `/admin/**` dan `/penghuni/**` dijaga filter sesi dan role.
+- Input divalidasi di sisi server sebelum disimpan.
 
-Dashboard admin dan dashboard penghuni memakai data ketersediaan kamar yang sama
-(`KamarDao.findAvailabilityByType`), begitu juga landing page publik.
+## Tim
 
-## Pembagian kerja FE / BE
-
-- **FE (frontend):** seluruh `src/main/webapp/**` — CSS, JS, gambar, dan JSP.
-- **BE (backend):** `src/main/java/**` (kecuali servlet mock/`HealthServlet`), seluruh `db/**`,
-  serta konfigurasi build dan deployment (`pom.xml`, `Dockerfile`, `docker-compose.yml`).
-
-## Catatan
-
-- Konfigurasi sensitif dibaca dari environment variable; password seed hanya disimpan sebagai hash BCrypt.
-- Tidak memakai Spring, Hibernate, Bootstrap, atau Tailwind. Semua CSS ditulis sendiri
-  memakai design token di `assets/css/tokens.css`.
+| Nama | NRP | Peran |
+|------|-----|-------|
+| Anang Ardhiansyah | 5025251118 | Back-end, database, autentikasi, deployment |
+| I Dewa Nyoman Acarya Wibawantra | 5025251222 | Front-end, UI/UX, desain database, JSP |
+| Komang Mahatma Langendria | 5025251151 | Front-end, JSP, komponen antarmuka |

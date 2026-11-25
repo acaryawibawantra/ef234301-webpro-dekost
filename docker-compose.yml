@@ -24,11 +24,11 @@ services:
       postgres:
         condition: service_healthy
     environment:
-      DB_URL: jdbc:postgresql://postgres:5432/dekost
-      DB_USER: dekost
-      DB_PASSWORD: dekost
+      DB_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:-dekost}
+      DB_USER: ${POSTGRES_USER:-dekost}
+      DB_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env or the environment}
       PORT: ${PORT:-8080}
-      ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@kos.test}
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@dekost.com}
       ADMIN_PASSWORD: ${ADMIN_PASSWORD:?Set ADMIN_PASSWORD in .env or the environment}
       WA_NUMBER: "000000000000"
     ports:
