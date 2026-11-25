@@ -8,6 +8,7 @@ public class Pembayaran {
     private Integer id;
     private Integer penghuniId;
     private String penghuniNama;
+    private String penghuniNoHp;
     private String nomorKamar;
     private LocalDate periode;
     private BigDecimal jumlah;
@@ -56,6 +57,14 @@ public class Pembayaran {
 
     public void setPenghuniNama(String penghuniNama) {
         this.penghuniNama = penghuniNama;
+    }
+
+    public String getPenghuniNoHp() {
+        return penghuniNoHp;
+    }
+
+    public void setPenghuniNoHp(String penghuniNoHp) {
+        this.penghuniNoHp = penghuniNoHp;
     }
 
     public String getNomorKamar() {

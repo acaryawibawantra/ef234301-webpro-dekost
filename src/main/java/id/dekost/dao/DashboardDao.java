@@ -74,6 +74,25 @@ public class DashboardDao {
         }
     }
 
+    public CurrentMonthBillingSummary getCurrentMonthBillingSummary() throws SQLException {
+        String sql = """
+                SELECT COUNT(*) AS total_tagihan,
+                       COALESCE(SUM(CASE WHEN status = 'LUNAS' THEN 1 ELSE 0 END), 0) AS tagihan_lunas
+                FROM pembayaran
+                WHERE periode >= DATE_TRUNC('month', CURRENT_DATE)::date
+                  AND periode < (DATE_TRUNC('month', CURRENT_DATE) + INTERVAL '1 month')::date
+                """;
+        try (Connection connection = Database.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql);
+             ResultSet result = statement.executeQuery()) {
+            result.next();
+            return new CurrentMonthBillingSummary(
+                    result.getLong("tagihan_lunas"),
+                    result.getLong("total_tagihan")
+            );
+        }
+    }
+
     public BillingSummary getOverdueBillingSummary() throws SQLException {
         String sql = """
                 SELECT COUNT(*) AS jumlah_tagihan,
@@ -114,7 +133,8 @@ public class DashboardDao {
     public List<Pembayaran> findUpcomingPayments() throws SQLException {
         String sql = """
                 SELECT b.id, b.penghuni_id, p.nama_lengkap AS penghuni_nama,
-                       k.nomor_kamar, b.periode, b.jumlah, b.jatuh_tempo,
+                       p.no_hp AS penghuni_no_hp, k.nomor_kamar,
+                       b.periode, b.jumlah, b.jatuh_tempo,
                        b.tanggal_bayar, b.metode,
                        CASE
                            WHEN b.status = 'LUNAS' THEN 'LUNAS'
@@ -143,11 +163,12 @@ public class DashboardDao {
     public List<Keluhan> findRecentComplaints() throws SQLException {
         String sql = """
                 SELECT k.id, k.penghuni_id, p.nama_lengkap AS penghuni_nama,
-                       k.ditangani_oleh, u.nama AS penangan_nama, k.judul, k.deskripsi,
-                       k.kategori, k.prioritas, k.status, k.tanggapan,
-                       k.created_at, k.resolved_at
+                       km.nomor_kamar, k.ditangani_oleh, u.nama AS penangan_nama,
+                       k.judul, k.deskripsi, k.kategori, k.prioritas, k.status,
+                       k.tanggapan, k.created_at, k.resolved_at
                 FROM keluhan k
                 JOIN penghuni p ON p.id = k.penghuni_id
+                LEFT JOIN kamar km ON km.id = p.kamar_id
                 LEFT JOIN users u ON u.id = k.ditangani_oleh
                 ORDER BY k.created_at DESC, k.id DESC
                 LIMIT 3
@@ -179,6 +200,7 @@ public class DashboardDao {
                 result.getString("bukti_url")
         );
         payment.setPenghuniNama(result.getString("penghuni_nama"));
+        payment.setPenghuniNoHp(result.getString("penghuni_no_hp"));
         payment.setNomorKamar(result.getString("nomor_kamar"));
         return payment;
     }
@@ -202,6 +224,7 @@ public class DashboardDao {
                 resolvedAt == null ? null : resolvedAt.toLocalDateTime()
         );
         complaint.setPenghuniNama(result.getString("penghuni_nama"));
+        complaint.setNomorKamar(result.getString("nomor_kamar"));
         complaint.setPenanganNama(result.getString("penangan_nama"));
         return complaint;
     }
@@ -237,6 +260,16 @@ public class DashboardDao {
 
         public long getPrioritasTinggi() {
             return prioritasTinggi;
+        }
+    }
+
+    public record CurrentMonthBillingSummary(long lunasCount, long totalCount) {
+        public long getLunasCount() {
+            return lunasCount;
+        }
+
+        public long getTotalCount() {
+            return totalCount;
         }
     }
 }
