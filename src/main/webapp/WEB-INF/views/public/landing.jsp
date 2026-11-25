@@ -38,7 +38,6 @@
                 <a class="button button--accent" href="#tipe-kamar">Lihat kamar kosong</a>
             </div>
 
-            <%-- Angka masih statis; akan dihubungkan ke data kamar pada tahap berikutnya. --%>
             <p class="hero__occupancy">24 kamar &middot; 3 masih kosong</p>
 
             <nav class="hero__social" aria-label="Tautan sosial De' Kost">
@@ -48,14 +47,9 @@
             </nav>
         </section>
 
-        <section class="about" id="tentang" aria-label="Tentang De' Kost">
-            <div class="about__aside">
-                <span class="section-pill">Tentang De&rsquo; Kost</span>
-            </div>
+        <section class="about" id="tentang">
             <p class="about__text">
-                Di De&rsquo; Kost kamu tidak sekadar menyewa kamar, kamu pulang. Sejak 2021 kami
-                menjadi rumah bagi mahasiswa dan pekerja muda dengan kamar bersih, lingkungan
-                aman, dan pengelolaan yang tertata.
+                Kos untuk mahasiswa dan pekerja muda. Kamar bersih, aman, dan dikelola dengan tertata sejak 2021.
             </p>
         </section>
 
@@ -63,17 +57,13 @@
             <h2 class="visually-hidden" id="highlights-title">Fasilitas De&rsquo; Kost</h2>
 
             <article class="highlight-card highlight-card--dark">
-                <span class="highlight-card__icon">
-                    <img src="${pageContext.request.contextPath}/assets/img/icon-shield.svg"
-                         alt="" width="24" height="24">
-                </span>
                 <p class="highlight-card__text">
                     Akses 24 jam dengan CCTV dan kunci pribadi, listrik token terpisah, serta
                     WiFi cepat di setiap lantai. Nyaman untuk istirahat dan belajar.
                 </p>
                 <div class="highlight-card__badges">
-                    <span class="badge badge--accent"><span class="badge__dot"></span>CCTV 24 jam</span>
-                    <span class="badge badge--neutral"><span class="badge__dot"></span>WiFi</span>
+                    <span class="badge badge--accent">CCTV 24 jam</span>
+                    <span class="badge badge--neutral">WiFi</span>
                 </div>
             </article>
 
@@ -92,24 +82,15 @@
 
                 <div class="room-row">
                     <span class="room-row__name">Standar</span>
-                    <img class="room-row__dots"
-                         src="${pageContext.request.contextPath}/assets/img/dots.svg"
-                         alt="" width="164" height="10">
-                    <span class="room-row__count">12</span>
+                    <span class="room-row__count">12 kamar</span>
                 </div>
                 <div class="room-row">
                     <span class="room-row__name">Deluxe</span>
-                    <img class="room-row__dots"
-                         src="${pageContext.request.contextPath}/assets/img/dots.svg"
-                         alt="" width="164" height="10">
-                    <span class="room-row__count">8</span>
+                    <span class="room-row__count">8 kamar</span>
                 </div>
                 <div class="room-row">
                     <span class="room-row__name">Premium</span>
-                    <img class="room-row__dots"
-                         src="${pageContext.request.contextPath}/assets/img/dots.svg"
-                         alt="" width="164" height="10">
-                    <span class="room-row__count">4</span>
+                    <span class="room-row__count">4 kamar</span>
                 </div>
             </article>
         </section>
@@ -157,7 +138,7 @@
                          role="img" aria-label="Kamar tipe Standar"></div>
                     <div class="room-card__head">
                         <h3 class="room-card__name">Standar</h3>
-                        <span class="badge badge--success"><span class="badge__dot"></span>3 tersedia</span>
+                        <span class="badge badge--success">3 tersedia</span>
                     </div>
                     <p class="room-card__price">Rp1.200.000 <span>/ bulan</span></p>
                     <p class="room-card__facilities">9 m&sup2; &middot; Kipas angin &middot; Kamar mandi luar &middot; WiFi</p>
@@ -169,7 +150,7 @@
                          role="img" aria-label="Kamar tipe Deluxe"></div>
                     <div class="room-card__head">
                         <h3 class="room-card__name">Deluxe</h3>
-                        <span class="badge badge--success"><span class="badge__dot"></span>2 tersedia</span>
+                        <span class="badge badge--success">2 tersedia</span>
                     </div>
                     <p class="room-card__price">Rp1.800.000 <span>/ bulan</span></p>
                     <p class="room-card__facilities">12 m&sup2; &middot; AC &middot; Kamar mandi dalam &middot; WiFi</p>
@@ -181,7 +162,7 @@
                          role="img" aria-label="Kamar tipe Premium"></div>
                     <div class="room-card__head">
                         <h3 class="room-card__name">Premium</h3>
-                        <span class="badge badge--warning"><span class="badge__dot"></span>1 tersisa</span>
+                        <span class="badge badge--warning">1 tersisa</span>
                     </div>
                     <p class="room-card__price">Rp2.400.000 <span>/ bulan</span></p>
                     <p class="room-card__facilities">16 m&sup2; &middot; AC &middot; Kamar mandi dalam &middot; Meja kerja</p>

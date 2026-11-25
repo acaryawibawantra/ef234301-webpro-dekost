@@ -6,10 +6,6 @@ import com.zaxxer.hikari.HikariDataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-/**
- * Sumber koneksi database (HikariCP). Konfigurasi dibaca dari environment
- * variable dengan default untuk pengembangan lokal memakai docker compose.
- */
 public final class Database {
 
     private static final String DEFAULT_URL = "jdbc:postgresql://localhost:5432/dekost";
@@ -44,19 +40,12 @@ public final class Database {
         return local;
     }
 
-    /**
-     * Mengambil koneksi dari connection pool. Pemanggil wajib menutup koneksi
-     * (try-with-resources) agar dikembalikan ke pool.
-     */
+    
     public static Connection getConnection() throws SQLException {
         return dataSource().getConnection();
     }
 
-    /**
-     * Cek konektivitas database.
-     *
-     * @return true jika query {@code SELECT 1} berhasil.
-     */
+    
     public static boolean ping() {
         try (Connection connection = getConnection();
              var statement = connection.createStatement();

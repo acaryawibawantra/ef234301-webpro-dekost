@@ -1,9 +1,4 @@
-/* =====================================================
-   Komponen bersama — De' Kost
-   Dipakai oleh halaman publik dan admin.
-   ===================================================== */
 
-/* ---------- Button ---------- */
 
 .button {
   display: inline-flex;
@@ -82,8 +77,6 @@
   font-size: 13px;
 }
 
-/* ---------- Badge ---------- */
-
 .badge {
   display: inline-flex;
   align-items: center;
@@ -94,13 +87,6 @@
   font-weight: 600;
   line-height: 1.3;
   white-space: nowrap;
-}
-
-.badge__dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background-color: currentColor;
 }
 
 .badge--accent {
@@ -127,8 +113,6 @@
   background-color: var(--surface-2);
   color: var(--ink-2);
 }
-
-/* ---------- Form field ---------- */
 
 .field {
   display: flex;
@@ -217,8 +201,6 @@
   accent-color: var(--accent);
 }
 
-/* ---------- Card ---------- */
-
 .card {
   padding: var(--space-32);
   border-radius: var(--radius-lg);
@@ -238,8 +220,6 @@
   border: 1.5px solid var(--border);
   background-color: var(--bg);
 }
-
-/* ---------- Stat card ---------- */
 
 .stat-card {
   display: flex;
@@ -282,8 +262,6 @@
 .stat-card--dark .stat-card__value {
   color: var(--bg);
 }
-
-/* ---------- Table card ---------- */
 
 .table-card {
   overflow: hidden;
@@ -415,8 +393,6 @@
   color: var(--on-accent);
 }
 
-/* ---------- Modal ---------- */
-
 .modal {
   position: fixed;
   inset: 0;
@@ -496,8 +472,6 @@
   gap: var(--space-16);
 }
 
-/* ---------- Toast ---------- */
-
 .toast-stack {
   position: fixed;
   top: var(--space-24);
@@ -528,8 +502,6 @@
   color: var(--warning);
 }
 
-/* ---------- Empty state ---------- */
-
 .empty-state {
   display: flex;
   flex-direction: column;
@@ -548,10 +520,6 @@
   font-weight: 500;
   line-height: 1.5;
 }
-
-/* =====================================================
-   Shell admin
-   ===================================================== */
 
 .admin-layout {
   display: flex;
@@ -670,13 +638,6 @@
 .sidebar__link:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
-}
-
-.sidebar__link svg,
-.sidebar__logout svg {
-  flex: 0 0 20px;
-  width: 20px;
-  height: 20px;
 }
 
 .sidebar__spacer {

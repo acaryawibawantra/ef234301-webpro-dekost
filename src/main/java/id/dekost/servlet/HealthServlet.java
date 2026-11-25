@@ -11,9 +11,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-/**
- * Halaman uji: memastikan aplikasi berjalan dan database dapat dijangkau.
- */
 @WebServlet(name = "HealthServlet", urlPatterns = "/health")
 public class HealthServlet extends HttpServlet {
 

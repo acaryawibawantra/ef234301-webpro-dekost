@@ -9,9 +9,6 @@ import jakarta.servlet.annotation.WebFilter;
 
 import java.io.IOException;
 
-/**
- * Memaksa encoding UTF-8 untuk seluruh request dan response.
- */
 @WebFilter(filterName = "EncodingFilter", urlPatterns = "/*")
 public class EncodingFilter implements Filter {
 

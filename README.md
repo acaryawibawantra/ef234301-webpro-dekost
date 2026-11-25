@@ -68,12 +68,11 @@ src/main/webapp/
   WEB-INF/web.xml
   WEB-INF/views/layout/   head.jspf, sidebar.jspf, topbar.jspf, footer.jspf
   WEB-INF/views/public/   landing.jsp, login.jsp
-  WEB-INF/views/admin/    (kosong, menunggu halaman CRUD)
+  WEB-INF/views/admin/    dashboard, kamar, tipe-kamar, penghuni, pembayaran, keluhan
   assets/css/             tokens.css, base.css, components.css, pages.css
   assets/js/              app.js
-  assets/img/             hero, footer, lorong, foto kamar, ikon
+  assets/img/             hero, footer, lorong, foto kamar, logo
 db/       schema.sql (DDL), seed.sql (data contoh)
-docs/     CONTRACT.md, DECISIONS.md, SPRINT.md, UI-KIT.md, ADMIN-SPEC.md
 ```
 
 ## Pembagian kerja FE / BE
@@ -81,9 +80,6 @@ docs/     CONTRACT.md, DECISIONS.md, SPRINT.md, UI-KIT.md, ADMIN-SPEC.md
 - **FE (frontend):** seluruh `src/main/webapp/**` — CSS, JS, gambar, dan JSP.
 - **BE (backend):** `src/main/java/**` (kecuali servlet mock/`HealthServlet`), seluruh `db/**`,
   serta konfigurasi build dan deployment (`pom.xml`, `Dockerfile`, `docker-compose.yml`).
-
-Kontrak request attribute dan parameter form antar FE/BE dicatat di `docs/CONTRACT.md`.
-Pembagian task dan sprint ada di `docs/SPRINT.md`.
 
 ## Catatan
 

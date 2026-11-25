@@ -8,10 +8,6 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
-/**
- * Halaman publik di root aplikasi. Saat ini hanya menampilkan landing page;
- * data kamar akan dihubungkan pada tahap berikutnya.
- */
 @WebServlet(name = "LandingServlet", urlPatterns = "")
 public class LandingServlet extends HttpServlet {
 
