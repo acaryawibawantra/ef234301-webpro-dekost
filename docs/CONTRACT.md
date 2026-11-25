@@ -16,6 +16,21 @@ parameter form **belum diisi**; akan disepakati tim pada akhir Fase 1.
 | `openComplaints` | `DashboardDao.OpenComplaintSummary` | Jumlah keluhan belum selesai dan jumlah berprioritas `TINGGI` |
 | `duePayments` | `List<Pembayaran>` | Maksimal 5 pembayaran belum lunas, diurutkan dari jatuh tempo terdekat; status tampilan dihitung dengan SQL `CASE` |
 | `recentComplaints` | `List<Keluhan>` | Maksimal 3 keluhan terbaru berdasarkan `created_at` |
+| `totalRooms` | `Long` | Jumlah total kamar (`TERSEDIA + TERISI + PERBAIKAN`) |
+| `occupiedRooms` | `Long` | Jumlah kamar berstatus `TERISI` |
+| `availableRooms` | `Long` | Jumlah kamar berstatus `TERSEDIA` |
+| `maintenanceRooms` | `Long` | Jumlah kamar berstatus `PERBAIKAN` |
+| `monthlyRevenueFormatted` | `String` | Format Rupiah untuk `monthlyRevenue` (`Rp0` jika null) |
+| `overdueTotalFormatted` | `String` | Format Rupiah untuk `overdueBilling.totalJumlah` (`Rp0` jika null) |
+| `paymentAmounts` | `Map<Integer, String>` | Nominal tagihan terformat Rupiah per `pembayaran.id` |
+| `paymentDueDates` | `Map<Integer, String>` | Tanggal jatuh tempo terformat (`d MMM uuuu`) per `pembayaran.id` |
+| `complaintDates` | `Map<Integer, String>` | Tanggal `createdAt` terformat (`d MMM uuuu`) per `keluhan.id` |
+| `pageTitle` | String | Judul halaman: `Dashboard` |
+| `pageSubtitle` | String | Ringkasan jumlah kamar dan kamar tersedia |
+| `pageActionLabel` | String | Label tombol aksi topbar: `Kelola kamar` |
+| `pageActionHref` | String | URL tombol aksi topbar (`/admin/kamar`) |
+| `activeNav` | String | Item sidebar aktif: `dashboard` |
+| `flash` | `Flash.Message` | Pesan setelah operasi POST berhasil/gagal |
 
 ### Parameter form
 
