@@ -25,7 +25,7 @@ public class HealthServlet extends HttpServlet {
                 : HttpServletResponse.SC_SERVICE_UNAVAILABLE);
 
         try (PrintWriter out = response.getWriter()) {
-            out.println("OK");
+            out.println(databaseConnected ? "OK" : "ERROR");
             out.println("Database: " + (databaseConnected ? "terhubung" : "tidak terhubung"));
         }
     }
