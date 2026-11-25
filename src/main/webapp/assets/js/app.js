@@ -81,6 +81,16 @@
         modal.classList.remove("is-open");
         if (modal.id === "confirm-delete-modal") {
             pendingConfirmForm = null;
+            var modalForm = modal.querySelector("form");
+            if (modalForm) {
+                if (modalForm.dataset && modalForm.dataset.defaultAction !== undefined) {
+                    modalForm.setAttribute("action", modalForm.dataset.defaultAction);
+                }
+                var modalIdInput = modalForm.querySelector('input[name="id"]');
+                if (modalIdInput) {
+                    modalIdInput.value = "";
+                }
+            }
         }
         updateBodyScrollLock(root);
 
@@ -102,16 +112,17 @@
         pendingConfirmForm = null;
 
         var form = modal.querySelector("form");
-        var deleteUrl = trigger.getAttribute("data-delete-url");
-        if (form && deleteUrl) {
-            form.setAttribute("action", deleteUrl);
-        }
+        if (form) {
+            if (form.dataset && form.dataset.defaultAction === undefined) {
+                form.dataset.defaultAction = form.getAttribute("action") || "";
+            }
+            var deleteUrl = trigger.getAttribute("data-delete-url");
+            form.setAttribute("action", deleteUrl || (form.dataset ? form.dataset.defaultAction : "") || "");
 
-        var deleteId = trigger.getAttribute("data-delete-id");
-        if (form && deleteId !== null) {
+            var deleteId = trigger.getAttribute("data-delete-id");
             var idInput = form.querySelector('input[name="id"]');
             if (idInput) {
-                idInput.value = deleteId;
+                idInput.value = deleteId !== null ? deleteId : "";
             }
         }
 

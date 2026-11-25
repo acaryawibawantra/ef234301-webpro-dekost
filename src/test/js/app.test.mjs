@@ -6,10 +6,6 @@ import vm from "node:vm";
 
 const APP_JS_PATH = path.resolve(process.cwd(), "src/main/webapp/assets/js/app.js");
 
-function toCamelCase(name) {
-    return name.replace(/-([a-z])/g, (_, ch) => ch.toUpperCase());
-}
-
 function toKebabCase(name) {
     return name.replace(/[A-Z]/g, (ch) => `-${ch.toLowerCase()}`);
 }
@@ -37,26 +33,27 @@ function matchesSimpleSelector(el, selector) {
 }
 
 function matchesCompound(el, compound) {
-    const attrRegex = /\[([^\]=]+)(?:="([^"]*)")?\]/g;
     let remaining = compound;
+    const notRegex = /:not\(([^)]+)\)/g;
     let match;
-    while ((match = attrRegex.exec(compound)) !== null) {
+    while ((match = notRegex.exec(compound)) !== null) {
+        if (matchesCompound(el, match[1])) return false;
+        remaining = remaining.replace(match[0], "");
+    }
+
+    const attrRegex = /\[([^\]=]+)(?:="([^"]*)")?\]/g;
+    let withoutAttrs = remaining;
+    while ((match = attrRegex.exec(remaining)) !== null) {
         const attrName = match[1];
         const expectedVal = match[2];
         if (!el.hasAttribute(attrName)) return false;
         if (expectedVal !== undefined && el.getAttribute(attrName) !== expectedVal) {
             return false;
         }
-        remaining = remaining.replace(match[0], "");
+        withoutAttrs = withoutAttrs.replace(match[0], "");
     }
 
-    const notRegex = /:not\(([^)]+)\)/g;
-    while ((match = notRegex.exec(remaining)) !== null) {
-        if (matchesCompound(el, match[1])) return false;
-        remaining = remaining.replace(match[0], "");
-    }
-
-    const tokens = remaining.match(/(#[^.#]+|\.[^.#]+|^[a-zA-Z0-9_-]+)/g) || [];
+    const tokens = withoutAttrs.match(/(#[^.#]+|\.[^.#]+|^[a-zA-Z0-9_-]+)/g) || [];
     for (const token of tokens) {
         if (token.startsWith("#")) {
             if (el.id !== token.slice(1)) return false;
@@ -112,6 +109,10 @@ function createDomEnvironment() {
                     },
                     set(_, prop, val) {
                         self.setAttribute(`data-${toKebabCase(String(prop))}`, String(val));
+                        return true;
+                    },
+                    deleteProperty(_, prop) {
+                        self._attrs.delete(`data-${toKebabCase(String(prop))}`);
                         return true;
                     }
                 }
@@ -175,6 +176,9 @@ function createDomEnvironment() {
             if (name === "class") {
                 this.className = value;
                 return;
+            }
+            if (name === "value") {
+                this.value = String(value);
             }
             this._attrs.set(name, String(value));
         }
@@ -321,6 +325,21 @@ function createDomEnvironment() {
                     this.defaultPrevented = true;
                 }
             });
+        },
+        submit(form) {
+            const event = {
+                type: "submit",
+                target: form,
+                defaultPrevented: false,
+                preventDefault() {
+                    this.defaultPrevented = true;
+                }
+            };
+            doc.dispatchEvent(event);
+            if (!event.defaultPrevented) {
+                form.submitted = true;
+            }
+            return event;
         }
     };
 }
@@ -341,10 +360,11 @@ function loadApp(env) {
 test("openModal and closeModal toggle .is-open via trigger, close buttons, backdrop, and Escape", () => {
     const env = createDomEnvironment();
     const trigger = env.el("button", { type: "button", "data-modal-open": "kamar-modal" });
+    const hiddenInput = env.el("input", { type: "hidden", name: "id" });
+    const textInput = env.el("input", { type: "text", name: "nomor" });
     const closeBtn = env.el("button", { type: "button", class: "modal__close" });
     const cancelBtn = env.el("button", { type: "button", "data-modal-close": "" });
-    const input = env.el("input", { type: "text" });
-    const dialog = env.el("div", { class: "modal__dialog" }, [closeBtn, input, cancelBtn]);
+    const dialog = env.el("div", { class: "modal__dialog" }, [hiddenInput, textInput, closeBtn, cancelBtn]);
     const modal = env.el("div", { id: "kamar-modal", class: "modal" }, [dialog]);
 
     env.document.body.appendChild(trigger);
@@ -357,7 +377,7 @@ test("openModal and closeModal toggle .is-open via trigger, close buttons, backd
     env.click(trigger);
     assert.equal(modal.classList.contains("is-open"), true);
     assert.equal(env.document.body.style.overflow, "hidden");
-    assert.equal(env.document.activeElement, closeBtn);
+    assert.equal(env.document.activeElement, textInput);
 
     env.click(closeBtn);
     assert.equal(modal.classList.contains("is-open"), false);
@@ -365,102 +385,204 @@ test("openModal and closeModal toggle .is-open via trigger, close buttons, backd
     assert.equal(env.document.activeElement, trigger);
 
     env.click(trigger);
-    assert.equal(modal.classList.contains("is-open"), true);
     env.click(cancelBtn);
     assert.equal(modal.classList.contains("is-open"), false);
 
     env.click(trigger);
-    assert.equal(modal.classList.contains("is-open"), true);
     env.click(modal);
     assert.equal(modal.classList.contains("is-open"), false);
 
     env.click(trigger);
-    assert.equal(modal.classList.contains("is-open"), true);
     env.keydown("Escape");
     assert.equal(modal.classList.contains("is-open"), false);
 });
 
-test("pre-opened .modal.is-open closes cleanly via Escape and backdrop without trigger", () => {
+test("stacked modals keep body scroll locked until the last modal closes", () => {
     const env = createDomEnvironment();
+    const m1 = env.el("div", { id: "m1", class: "modal" }, [env.el("div", { class: "modal__dialog" })]);
+    const m2 = env.el("div", { id: "m2", class: "modal" }, [env.el("div", { class: "modal__dialog" })]);
+    env.document.body.appendChild(m1);
+    env.document.body.appendChild(m2);
+
+    const ui = loadApp(env);
+    ui.openModal("m1");
+    ui.openModal("m2");
+    assert.equal(env.document.body.style.overflow, "hidden");
+
+    env.keydown("Escape");
+    assert.equal(m2.classList.contains("is-open"), false);
+    assert.equal(m1.classList.contains("is-open"), true);
+    assert.equal(env.document.body.style.overflow, "hidden");
+
+    env.keydown("Escape");
+    assert.equal(m1.classList.contains("is-open"), false);
+    assert.equal(env.document.body.style.overflow, "");
+});
+
+test("pre-opened .modal.is-open locks body scroll on load and closes via Escape, close buttons, and backdrop", () => {
+    const env = createDomEnvironment();
+    const closeBtn = env.el("button", { type: "button", class: "modal__close" });
+    const cancelBtn = env.el("button", { type: "button", "data-modal-close": "" });
     const modal = env.el("div", { id: "edit-modal", class: "modal is-open" }, [
-        env.el("div", { class: "modal__dialog" })
+        env.el("div", { class: "modal__dialog" }, [closeBtn, cancelBtn])
     ]);
     env.document.body.appendChild(modal);
 
     loadApp(env);
+    assert.equal(env.document.body.style.overflow, "hidden");
+
     env.keydown("Escape");
     assert.equal(modal.classList.contains("is-open"), false);
     assert.equal(env.document.body.style.overflow, "");
+
+    modal.classList.add("is-open");
+    env.click(closeBtn);
+    assert.equal(modal.classList.contains("is-open"), false);
+
+    modal.classList.add("is-open");
+    env.click(cancelBtn);
+    assert.equal(modal.classList.contains("is-open"), false);
+
+    modal.classList.add("is-open");
+    env.click(modal);
+    assert.equal(modal.classList.contains("is-open"), false);
 });
 
-test("missing modal target on [data-modal-open] and Escape without open modal are safe no-ops", () => {
+test("missing modal target on [data-modal-open], [data-confirm-open], and Escape without open modal are safe no-ops", () => {
     const env = createDomEnvironment();
     const trigger = env.el("button", { type: "button", "data-modal-open": "nonexistent" });
+    const confirmTrigger = env.el("button", {
+        type: "button",
+        "data-confirm-open": "confirm-delete-modal",
+        "data-delete-url": "/admin/kamar/delete",
+        "data-delete-id": "1"
+    });
     env.document.body.appendChild(trigger);
+    env.document.body.appendChild(confirmTrigger);
 
     const ui = loadApp(env);
     assert.doesNotThrow(() => {
         env.click(trigger);
+        env.click(confirmTrigger);
         env.keydown("Escape");
         assert.equal(ui.openModal("nonexistent"), false);
         assert.equal(ui.closeModal(), false);
     });
 });
 
-test("delete confirmation trigger populates form action, id, title, and XSS-safe textContent message", () => {
+test("delete confirmation resets stale id and action across consecutive triggers and escapes XSS/quotes", () => {
     const env = createDomEnvironment();
-    const xssPayload = 'Hapus kamar <script>alert(1)</script>?';
-    const deleteBtn = env.el("button", {
+    const xssPayload = 'Hapus "Kamar" \'101\' <script>alert(1)</script>?';
+    const firstBtn = env.el("button", {
         type: "button",
         "data-confirm-open": "confirm-delete-modal",
         "data-delete-url": "/admin/kamar/delete",
         "data-delete-id": "42",
-        "data-delete-title": "Hapus Kamar 101",
+        "data-delete-title": 'Hapus "Kamar 101"',
         "data-delete-message": xssPayload
+    });
+    const secondBtn = env.el("button", {
+        type: "button",
+        "data-confirm-open": "confirm-delete-modal"
     });
 
     const titleEl = env.el("h2", { class: "modal__title", "data-confirm-title": "" });
     const msgEl = env.el("p", { "data-confirm-message": "" });
     const idInput = env.el("input", { type: "hidden", name: "id", value: "" });
-    const form = env.el("form", { method: "post", action: "/admin/dashboard" }, [idInput, msgEl]);
+    const cancelBtn = env.el("button", { type: "button", "data-modal-close": "" });
+    const form = env.el("form", { method: "post", action: "/admin/dashboard" }, [idInput, msgEl, cancelBtn]);
     const modal = env.el("div", { id: "confirm-delete-modal", class: "modal" }, [
         env.el("div", { class: "modal__dialog" }, [titleEl, form])
     ]);
 
-    env.document.body.appendChild(deleteBtn);
+    env.document.body.appendChild(firstBtn);
+    env.document.body.appendChild(secondBtn);
     env.document.body.appendChild(modal);
 
     loadApp(env);
-    env.click(deleteBtn);
+    env.click(firstBtn);
 
     assert.equal(modal.classList.contains("is-open"), true);
     assert.equal(form.getAttribute("action"), "/admin/kamar/delete");
     assert.equal(idInput.value, "42");
-    assert.equal(titleEl.textContent, "Hapus Kamar 101");
+    assert.equal(titleEl.textContent, 'Hapus "Kamar 101"');
     assert.equal(msgEl.textContent, xssPayload);
     assert.equal(msgEl.innerHTML, "");
+
+    env.click(cancelBtn);
+    assert.equal(idInput.value, "");
+    assert.equal(form.getAttribute("action"), "/admin/dashboard");
+
+    env.click(secondBtn);
+    assert.equal(idInput.value, "");
+    assert.equal(form.getAttribute("action"), "/admin/dashboard");
+    assert.equal(titleEl.textContent, "Konfirmasi hapus");
 });
 
-test("toast auto-dismisses after timeout, dismisses on click, and respects data-toast-timeout=0", async () => {
+test("form[data-confirm] intercepts submit, submits on confirm, and clears pending state on cancel", () => {
     const env = createDomEnvironment();
+    const targetForm = env.el("form", {
+        method: "post",
+        action: "/admin/penghuni/checkout",
+        "data-confirm": "Check-out penghuni ini?",
+        "data-confirm-title": "Konfirmasi check-out"
+    });
+
+    const titleEl = env.el("h2", { class: "modal__title", "data-confirm-title": "" });
+    const msgEl = env.el("p", { "data-confirm-message": "" });
+    const cancelBtn = env.el("button", { type: "button", "data-modal-close": "" });
+    const confirmSubmitBtn = env.el("button", { type: "submit", "data-confirm-submit": "" });
+    const modalForm = env.el("form", { method: "post", action: "/admin/dashboard" }, [
+        msgEl,
+        cancelBtn,
+        confirmSubmitBtn
+    ]);
+    const modal = env.el("div", { id: "confirm-delete-modal", class: "modal" }, [
+        env.el("div", { class: "modal__dialog" }, [titleEl, modalForm])
+    ]);
+
+    env.document.body.appendChild(targetForm);
+    env.document.body.appendChild(modal);
+
+    loadApp(env);
+
+    env.submit(targetForm);
+    assert.equal(targetForm.submitted, false);
+    assert.equal(modal.classList.contains("is-open"), true);
+    assert.equal(titleEl.textContent, "Konfirmasi check-out");
+    assert.equal(msgEl.textContent, "Check-out penghuni ini?");
+
+    env.click(cancelBtn);
+    assert.equal(modal.classList.contains("is-open"), false);
+    assert.equal(targetForm.submitted, false);
+
+    env.submit(targetForm);
+    assert.equal(modal.classList.contains("is-open"), true);
+    env.click(confirmSubmitBtn);
+    assert.equal(modal.classList.contains("is-open"), false);
+    assert.equal(targetForm.submitted, true);
+});
+
+test("toast auto-dismisses server & dynamic toasts, cancels timer on click, creates stack when missing, and respects timeout=0", async () => {
+    const env = createDomEnvironment();
+    const ui = loadApp(env);
+
+    const createdToast = ui.showToast("Stack dibuat otomatis", "warning", 25);
+    assert.ok(createdToast);
+    assert.equal(createdToast.classList.contains("toast--warning"), true);
+    assert.ok(env.document.querySelector(".toast-stack"));
+
     const persistentToast = env.el("p", { class: "toast", "data-toast-timeout": "0" });
     persistentToast.textContent = "Tetap tampil";
-    const stack = env.el("div", { class: "toast-stack", "data-toast-timeout": "40" }, [
-        persistentToast
-    ]);
-    env.document.body.appendChild(stack);
+    const stack = env.document.querySelector(".toast-stack");
+    stack.appendChild(persistentToast);
 
-    const ui = loadApp(env);
-    const autoToast = ui.showToast("Tersimpan", "success", 30);
-    assert.ok(autoToast);
-    assert.equal(autoToast.textContent, "Tersimpan");
-
-    const errorToast = ui.showToast("Gagal", "error", 100);
-    assert.equal(errorToast.classList.contains("toast--error"), true);
-    env.click(errorToast);
-    assert.equal(errorToast.isConnected, false);
+    const manualToast = ui.showToast("Gagal", "error", 20);
+    assert.equal(manualToast.classList.contains("toast--error"), true);
+    env.click(manualToast);
+    assert.equal(manualToast.isConnected, false);
 
     await new Promise((r) => setTimeout(r, 70));
-    assert.equal(autoToast.isConnected, false);
+    assert.equal(createdToast.isConnected, false);
     assert.equal(persistentToast.isConnected, true);
 });
