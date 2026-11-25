@@ -1,0 +1,20 @@
+<%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
+<div class="modal" id="confirm-delete-modal" role="dialog" aria-modal="true" aria-labelledby="confirm-delete-title">
+    <div class="modal__dialog">
+        <header class="modal__header">
+            <h2 class="modal__title" id="confirm-delete-title" data-confirm-title>Konfirmasi hapus</h2>
+            <button class="modal__close" type="button" aria-label="Tutup" data-modal-close>&times;</button>
+        </header>
+        <form method="post" action="${pageContext.request.contextPath}/admin/dashboard">
+            <input type="hidden" name="_csrf" value="${fn:escapeXml(csrfToken)}">
+            <input type="hidden" name="id" value="">
+            <div class="modal__body">
+                <p data-confirm-message>Apakah Anda yakin ingin menghapus data ini?</p>
+            </div>
+            <footer class="modal__footer">
+                <button class="button button--secondary" type="button" data-modal-close>Batal</button>
+                <button class="button button--primary" type="submit" data-confirm-submit>Hapus</button>
+            </footer>
+        </form>
+    </div>
+</div>
