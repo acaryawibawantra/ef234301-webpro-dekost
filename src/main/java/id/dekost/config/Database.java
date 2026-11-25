@@ -9,10 +9,6 @@ import java.sql.SQLException;
 
 public final class Database {
 
-    private static final String DEFAULT_URL = "jdbc:postgresql://localhost:5432/dekost";
-    private static final String DEFAULT_USER = "dekost";
-    private static final String DEFAULT_PASSWORD = "dekost";
-
     private static volatile HikariDataSource dataSource;
 
     private Database() {
@@ -25,9 +21,15 @@ public final class Database {
                 local = dataSource;
                 if (local == null) {
                     HikariConfig config = new HikariConfig();
+<<<<<<< HEAD
                     config.setJdbcUrl(normalizeJdbcUrl(env("DB_URL", DEFAULT_URL)));
                     config.setUsername(env("DB_USER", DEFAULT_USER));
                     config.setPassword(env("DB_PASSWORD", DEFAULT_PASSWORD));
+=======
+                    config.setJdbcUrl(requiredEnv("DB_URL"));
+                    config.setUsername(requiredEnv("DB_USER"));
+                    config.setPassword(requiredEnv("DB_PASSWORD"));
+>>>>>>> d36df0c998ad56112dc7b75bc21d657dcb0409a6
                     config.setDriverClassName("org.postgresql.Driver");
                     config.setMaximumPoolSize(10);
                     config.setMinimumIdle(2);
@@ -41,25 +43,26 @@ public final class Database {
         return local;
     }
 
-    
     public static Connection getConnection() throws SQLException {
         return dataSource().getConnection();
     }
 
-    
     public static boolean ping() {
         try (Connection connection = getConnection();
-             var statement = connection.createStatement();
-             var result = statement.executeQuery("SELECT 1")) {
+             var statement = connection.prepareStatement("SELECT 1");
+             var result = statement.executeQuery()) {
             return result.next();
         } catch (SQLException e) {
             return false;
         }
     }
 
-    private static String env(String key, String fallback) {
+    private static String requiredEnv(String key) {
         String value = System.getenv(key);
-        return (value == null || value.isBlank()) ? fallback : value;
+        if (value == null || value.isBlank()) {
+            throw new IllegalStateException("Environment variable " + key + " must be set.");
+        }
+        return value;
     }
 
     static String normalizeJdbcUrl(String value) {
