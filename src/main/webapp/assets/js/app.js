@@ -4,6 +4,7 @@
     var DEFAULT_TOAST_TIMEOUT_MS = 4500;
     var FOCUSABLE_SELECTOR =
         "button, [href], input:not([type=\"hidden\"]), select, textarea, [tabindex]:not([tabindex=\"-1\"])";
+    var MODAL_FIELD_PREFIX = "data-modal-field-";
 
     var initializedRoots = new WeakSet();
     var modalTriggers = new WeakMap();
@@ -43,6 +44,51 @@
         }
     }
 
+    function findFieldIgnoringCase(form, fieldName) {
+        var fields = form.querySelectorAll("[name]");
+        for (var i = 0; i < fields.length; i++) {
+            var name = fields[i].getAttribute("name");
+            if (name && name.toLowerCase() === fieldName) {
+                return fields[i];
+            }
+        }
+        return null;
+    }
+
+    function applyModalTriggerData(modal, trigger) {
+        if (!trigger || typeof trigger.getAttribute !== "function") {
+            return;
+        }
+        var form = modal.querySelector("form");
+        if (!form) {
+            return;
+        }
+
+        var action = trigger.getAttribute("data-modal-action");
+        if (action !== null) {
+            form.setAttribute("action", action);
+        }
+
+        var attributes = trigger.attributes;
+        if (!attributes) {
+            return;
+        }
+        for (var i = 0; i < attributes.length; i++) {
+            var attribute = attributes[i];
+            if (attribute.name.indexOf(MODAL_FIELD_PREFIX) !== 0) {
+                continue;
+            }
+            var fieldName = attribute.name.slice(MODAL_FIELD_PREFIX.length);
+            if (!fieldName) {
+                continue;
+            }
+            var input = form.querySelector('[name="' + fieldName + '"]') || findFieldIgnoringCase(form, fieldName);
+            if (input) {
+                input.value = attribute.value === null ? "" : attribute.value;
+            }
+        }
+    }
+
     function openModal(modalOrId, trigger, rootArg) {
         var root = rootArg || global.document;
         var modal = resolveModal(root, modalOrId);
@@ -54,6 +100,7 @@
         } else if (root.activeElement && root.activeElement !== root.body) {
             modalTriggers.set(modal, root.activeElement);
         }
+        applyModalTriggerData(modal, trigger);
         modal.classList.add("is-open");
         updateBodyScrollLock(root);
         focusModal(modal);

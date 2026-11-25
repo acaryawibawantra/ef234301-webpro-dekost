@@ -1,0 +1,64 @@
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
+<c:set var="ctx" value="${pageContext.request.contextPath}"/>
+<aside class="sidebar" aria-label="Navigasi area penghuni">
+    <a class="sidebar__brand" href="${ctx}/penghuni/dashboard">
+        <span class="sidebar__logo">
+            <img src="${ctx}/assets/img/logo-mark.svg" alt="" width="22" height="22">
+        </span>
+        <span class="sidebar__brand-text">
+            <span class="sidebar__brand-name">De&rsquo; Kost</span>
+            <span class="sidebar__brand-sub">Area penghuni</span>
+        </span>
+    </a>
+
+    <p class="sidebar__menu-label">Menu</p>
+
+    <nav class="sidebar__nav">
+        <a class="sidebar__link ${activeNav eq 'dashboard' ? 'is-active' : ''}"
+           href="${ctx}/penghuni/dashboard">
+            <span>Dashboard</span>
+        </a>
+
+        <a class="sidebar__link ${activeNav eq 'tagihan' ? 'is-active' : ''}"
+           href="${ctx}/penghuni/tagihan">
+            <span>Tagihan</span>
+        </a>
+
+        <a class="sidebar__link ${activeNav eq 'keluhan' ? 'is-active' : ''}"
+           href="${ctx}/penghuni/keluhan">
+            <span>Keluhan</span>
+        </a>
+    </nav>
+
+    <div class="sidebar__spacer"></div>
+
+    <div class="sidebar__user">
+        <span class="sidebar__avatar">PH</span>
+        <span class="sidebar__user-text">
+            <span class="sidebar__user-name">
+                <c:choose>
+                    <c:when test="${not empty sessionScope.user}">
+                        <c:out value="${sessionScope.user.nama}"/>
+                    </c:when>
+                    <c:otherwise>Penghuni</c:otherwise>
+                </c:choose>
+            </span>
+            <span class="sidebar__user-email">
+                <c:choose>
+                    <c:when test="${not empty sessionScope.user}">
+                        <c:out value="${sessionScope.user.email}"/>
+                    </c:when>
+                    <c:otherwise>penghuni@kos.test</c:otherwise>
+                </c:choose>
+            </span>
+        </span>
+    </div>
+
+    <form class="sidebar__logout-form" method="post" action="${ctx}/logout">
+        <input type="hidden" name="_csrf" value="${fn:escapeXml(csrfToken)}">
+        <button class="sidebar__logout" type="submit">
+            <span>Keluar</span>
+        </button>
+    </form>
+</aside>

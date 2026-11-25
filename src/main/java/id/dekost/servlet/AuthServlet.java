@@ -19,6 +19,7 @@ public class AuthServlet extends HttpServlet {
     public static final String USER_SESSION_ATTRIBUTE = "user";
     private static final int SESSION_TIMEOUT_SECONDS = 30 * 60;
     private static final String ADMIN_HOME = "/admin/dashboard";
+    private static final String RESIDENT_HOME = "/penghuni/dashboard";
 
     private final AuthService authService = new AuthService();
 
@@ -66,9 +67,14 @@ public class AuthServlet extends HttpServlet {
         session.setAttribute(USER_SESSION_ATTRIBUTE, authenticatedUser.get());
         session.setMaxInactiveInterval(SESSION_TIMEOUT_SECONDS);
 
-        String destination = "ADMIN".equals(authenticatedUser.get().getRole())
-                ? ADMIN_HOME
-                : "/";
+        String destination;
+        if ("ADMIN".equals(authenticatedUser.get().getRole())) {
+            destination = ADMIN_HOME;
+        } else if ("PENGHUNI".equals(authenticatedUser.get().getRole())) {
+            destination = RESIDENT_HOME;
+        } else {
+            destination = "/";
+        }
         response.sendRedirect(request.getContextPath() + destination);
     }
 

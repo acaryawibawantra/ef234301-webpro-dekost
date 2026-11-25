@@ -279,6 +279,11 @@ public class KeluhanServlet extends HttpServlet {
         request.setAttribute("priorities", PRIORITIES);
         request.setAttribute("statuses", List.of("BARU", "DIPROSES", "SELESAI"));
         request.setAttribute("pageTitle", "Keluhan");
+        request.setAttribute("pageSubtitle", totalItems + " keluhan");
+        request.setAttribute("pageSearchAction", request.getContextPath() + LIST_PATH);
+        request.setAttribute("pageSearchPlaceholder", "Cari keluhan");
+        request.setAttribute("pageActionLabel", "Catat keluhan");
+        request.setAttribute("pageActionModal", "keluhan-create-modal");
         request.setAttribute("activeNav", "keluhan");
         Flash.consume(request);
         request.getRequestDispatcher(VIEW).forward(request, response);

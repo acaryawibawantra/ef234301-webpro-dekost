@@ -293,6 +293,11 @@ public class PenghuniServlet extends HttpServlet {
         request.setAttribute("form", form);
         request.setAttribute("errors", errors);
         request.setAttribute("pageTitle", "Penghuni");
+        request.setAttribute("pageSubtitle", totalItems + " penghuni");
+        request.setAttribute("pageSearchAction", request.getContextPath() + LIST_PATH);
+        request.setAttribute("pageSearchPlaceholder", "Cari penghuni");
+        request.setAttribute("pageActionLabel", "Tambah penghuni");
+        request.setAttribute("pageActionModal", "penghuni-create-modal");
         request.setAttribute("activeNav", "penghuni");
         Flash.consume(request);
         request.getRequestDispatcher(VIEW).forward(request, response);

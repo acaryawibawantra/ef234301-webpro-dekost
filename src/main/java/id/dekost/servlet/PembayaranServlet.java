@@ -271,6 +271,11 @@ public class PembayaranServlet extends HttpServlet {
         request.setAttribute("errors", errors);
         request.setAttribute("paymentMethods", Set.of("TUNAI", "TRANSFER", "QRIS"));
         request.setAttribute("pageTitle", "Pembayaran");
+        request.setAttribute("pageSubtitle", totalItems + " tagihan");
+        request.setAttribute("pageSearchAction", request.getContextPath() + LIST_PATH);
+        request.setAttribute("pageSearchPlaceholder", "Cari tagihan");
+        request.setAttribute("pageActionLabel", "Tambah tagihan");
+        request.setAttribute("pageActionModal", "pembayaran-create-modal");
         request.setAttribute("activeNav", "pembayaran");
         Flash.consume(request);
         request.getRequestDispatcher(VIEW).forward(request, response);

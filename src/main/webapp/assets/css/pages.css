@@ -1095,3 +1095,40 @@
   font-size: 13px;
   line-height: 1.45;
 }
+
+.detail-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.detail-list__item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-16);
+  padding: var(--space-12) 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.detail-list__item:first-child {
+  padding-top: 0;
+}
+
+.detail-list__item:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.detail-list__label {
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.detail-list__value {
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.4;
+  text-align: right;
+}

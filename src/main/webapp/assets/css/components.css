@@ -89,6 +89,13 @@
   white-space: nowrap;
 }
 
+.badge__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: currentColor;
+}
+
 .badge--accent {
   background-color: var(--accent-soft);
   color: var(--accent-dark);
@@ -766,16 +773,25 @@
   white-space: nowrap;
 }
 
+.sidebar__logout-form {
+  margin: 0;
+}
+
 .sidebar__logout {
   display: flex;
   align-items: center;
   gap: var(--space-12);
+  width: 100%;
   padding: 12px var(--space-16);
+  border: 0;
   border-radius: var(--radius-md);
+  background-color: transparent;
   color: var(--ink-2);
   font-size: 14px;
   font-weight: 600;
   line-height: 1.3;
+  text-align: left;
+  cursor: pointer;
   transition: background-color 160ms ease, color 160ms ease;
 }
 
