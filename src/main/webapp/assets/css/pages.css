@@ -1012,6 +1012,7 @@
 }
 
 .card--compact {
+  min-width: 0;
   padding: var(--space-24);
 }
 
@@ -1102,12 +1103,14 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-16);
+  min-width: 0;
 }
 
 .complaint-item {
   display: flex;
   flex-direction: column;
   gap: var(--space-8);
+  min-width: 0;
   padding-top: var(--space-16);
   border-top: 1px solid var(--border);
 }
@@ -1122,13 +1125,22 @@
   align-items: flex-start;
   justify-content: space-between;
   gap: var(--space-12);
+  min-width: 0;
 }
 
 .complaint-item__title {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  word-break: break-word;
   color: var(--ink);
   font-size: 14px;
   font-weight: 600;
   line-height: 1.4;
+}
+
+.complaint-item__top .badge {
+  flex-shrink: 0;
 }
 
 .complaint-item__badges {
@@ -1138,6 +1150,8 @@
 }
 
 .complaint-item__meta {
+  overflow-wrap: anywhere;
+  word-break: break-word;
   color: var(--muted);
   font-size: 13px;
   line-height: 1.45;
