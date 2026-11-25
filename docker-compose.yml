@@ -12,7 +12,7 @@ services:
       - ./db/seed.sql:/docker-entrypoint-initdb.d/02-seed.sql:ro
       - pgdata:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U \"$${POSTGRES_USER}\" -d \"$${POSTGRES_DB}\""]
+      test: ["CMD-SHELL", 'pg_isready -U "$${POSTGRES_USER}" -d "$${POSTGRES_DB}"']
       interval: 5s
       timeout: 5s
       retries: 10
@@ -24,7 +24,6 @@ services:
       postgres:
         condition: service_healthy
     environment:
-<<<<<<< HEAD
       DB_URL: jdbc:postgresql://postgres:5432/dekost
       DB_USER: dekost
       DB_PASSWORD: dekost
@@ -34,15 +33,6 @@ services:
       WA_NUMBER: "000000000000"
     ports:
       - "${PORT:-8080}:${PORT:-8080}"
-=======
-      DB_URL: ${DB_URL:-jdbc:postgresql://postgres:5432/dekost}
-      DB_USER: ${POSTGRES_USER:-dekost}
-      DB_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env or the deployment environment}
-      WA_NUMBER: ${WA_NUMBER:-000000000000}
-    ports:
-      - "${APP_PORT:-8080}:8080"
-    restart: unless-stopped
->>>>>>> d36df0c998ad56112dc7b75bc21d657dcb0409a6
 
 volumes:
   pgdata:

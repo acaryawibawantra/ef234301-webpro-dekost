@@ -21,15 +21,9 @@ public final class Database {
                 local = dataSource;
                 if (local == null) {
                     HikariConfig config = new HikariConfig();
-<<<<<<< HEAD
                     config.setJdbcUrl(normalizeJdbcUrl(env("DB_URL", DEFAULT_URL)));
                     config.setUsername(env("DB_USER", DEFAULT_USER));
                     config.setPassword(env("DB_PASSWORD", DEFAULT_PASSWORD));
-=======
-                    config.setJdbcUrl(requiredEnv("DB_URL"));
-                    config.setUsername(requiredEnv("DB_USER"));
-                    config.setPassword(requiredEnv("DB_PASSWORD"));
->>>>>>> d36df0c998ad56112dc7b75bc21d657dcb0409a6
                     config.setDriverClassName("org.postgresql.Driver");
                     config.setMaximumPoolSize(10);
                     config.setMinimumIdle(2);
