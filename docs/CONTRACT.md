@@ -204,11 +204,17 @@ memakai `POST /admin/keluhan/create`, `/update`, dan `/delete`. Saat status beru
 | Request attribute | Tipe | Keterangan |
 |---|---|---|
 | `tipeKamarList` | `List<TipeKamar>` | Hasil pencarian yang sudah dipaginasi |
+| `hargaFormatted` | `Map<Integer, String>` | Harga bulanan terformat Rupiah per `tipe_kamar.id` |
 | `pagination` | `Pagination` | Metadata pagination, 10 baris per halaman |
 | `q` | String | Nilai pencarian nama yang sudah di-trim |
 | `form` | `TipeKamar` | Nilai form tambah/ubah, termasuk nilai input saat validasi gagal |
 | `errors` | `Map<String, String>` | Pesan validasi per nama field atau `general` |
 | `pageTitle` | String | Judul halaman: `Tipe Kamar` |
+| `pageSubtitle` | String | Ringkasan jumlah tipe kamar |
+| `pageSearchAction` | String | URL form pencarian topbar (`/admin/tipe-kamar`) |
+| `pageSearchPlaceholder` | String | Placeholder pencarian topbar (`Cari tipe kamar`) |
+| `pageActionLabel` | String | Label tombol aksi topbar (`Tambah tipe kamar`) |
+| `pageActionModal` | String | Target ID modal tambah (`tipe-kamar-create-modal`) |
 | `activeNav` | String | Item sidebar aktif: `tipe-kamar` |
 | `flash` | `Flash.Message` | Pesan setelah operasi POST berhasil/gagal |
 

@@ -4,6 +4,7 @@ import id.dekost.dao.TipeKamarDao;
 import id.dekost.model.TipeKamar;
 import id.dekost.util.Flash;
 import id.dekost.util.Pagination;
+import id.dekost.util.RupiahFormatter;
 import id.dekost.util.Validator;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -15,6 +16,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Pattern;
@@ -234,17 +236,40 @@ public class TipeKamarServlet extends HttpServlet {
         String normalizedQuery = query == null ? "" : query.trim();
         long totalItems = tipeKamarDao.count(normalizedQuery);
         Pagination pagination = Pagination.of(requestedPage, totalItems);
+        List<TipeKamar> tipeKamarList = tipeKamarDao.findPage(
+                normalizedQuery, pagination.getPageSize(), pagination.getOffset());
 
-        request.setAttribute("tipeKamarList", tipeKamarDao.findPage(
-                normalizedQuery, pagination.getPageSize(), pagination.getOffset()));
+        request.setAttribute("tipeKamarList", tipeKamarList);
+        request.setAttribute("hargaFormatted", buildHargaFormattedMap(tipeKamarList));
         request.setAttribute("pagination", pagination);
         request.setAttribute("q", normalizedQuery);
         request.setAttribute("form", form);
         request.setAttribute("errors", errors);
         request.setAttribute("pageTitle", "Tipe Kamar");
+        request.setAttribute("pageSubtitle", totalItems + " tipe kamar");
+        request.setAttribute("pageSearchAction", request.getContextPath() + LIST_PATH);
+        request.setAttribute("pageSearchPlaceholder", "Cari tipe kamar");
+        request.setAttribute("pageActionLabel", "Tambah tipe kamar");
+        request.setAttribute("pageActionModal", "tipe-kamar-create-modal");
         request.setAttribute("activeNav", "tipe-kamar");
         Flash.consume(request);
         request.getRequestDispatcher(VIEW).forward(request, response);
+    }
+
+    static Map<Integer, String> buildHargaFormattedMap(List<TipeKamar> items) {
+        Map<Integer, String> formatted = new LinkedHashMap<>();
+        if (items == null) {
+            return formatted;
+        }
+        for (TipeKamar item : items) {
+            if (item == null || item.getId() == null) {
+                continue;
+            }
+            BigDecimal harga = item.getHargaBulanan();
+            formatted.put(item.getId(),
+                    harga == null ? RupiahFormatter.format(BigDecimal.ZERO) : RupiahFormatter.format(harga));
+        }
+        return formatted;
     }
 
     private static Integer parsePositiveInteger(String value) {
