@@ -7,6 +7,7 @@ public class Keluhan {
     private Integer id;
     private Integer penghuniId;
     private String penghuniNama;
+    private String nomorKamar;
     private Integer ditanganiOleh;
     private String penanganNama;
     private String judul;
@@ -59,6 +60,14 @@ public class Keluhan {
 
     public void setPenghuniNama(String penghuniNama) {
         this.penghuniNama = penghuniNama;
+    }
+
+    public String getNomorKamar() {
+        return nomorKamar;
+    }
+
+    public void setNomorKamar(String nomorKamar) {
+        this.nomorKamar = nomorKamar;
     }
 
     public Integer getDitanganiOleh() {
