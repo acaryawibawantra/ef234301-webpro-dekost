@@ -346,7 +346,7 @@
   line-height: 1.5;
 }
 
-.table__cell--muted {
+.table tbody td.table__cell--muted {
   color: var(--muted);
 }
 
